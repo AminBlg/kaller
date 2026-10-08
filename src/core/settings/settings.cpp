@@ -34,7 +34,7 @@ void Settings::write(const char *key, bool value)
     group.sync();
 }
 
-#define FONER_DEFINE_SETTER(Setter, Member, Key, Signal)                                           \
+#define KALLER_DEFINE_SETTER(Setter, Member, Key, Signal)                                           \
     void Settings::Setter(bool on)                                                                 \
     {                                                                                              \
         if (Member == on)                                                                          \
@@ -44,16 +44,16 @@ void Settings::write(const char *key, bool value)
         Q_EMIT Signal();                                                                           \
     }
 
-FONER_DEFINE_SETTER(setCloseToTray, m_closeToTray, "CloseToTray", closeToTrayChanged)
-FONER_DEFINE_SETTER(setStartMinimised, m_startMinimised, "StartMinimised", startMinimisedChanged)
-FONER_DEFINE_SETTER(setNotifyIncoming, m_notifyIncoming, "NotifyIncoming", notifyIncomingChanged)
-FONER_DEFINE_SETTER(setNotifyMissed, m_notifyMissed, "NotifyMissed", notifyMissedChanged)
-FONER_DEFINE_SETTER(setNotifyEnded, m_notifyEnded, "NotifyEnded", notifyEndedChanged)
-FONER_DEFINE_SETTER(setNotifyErrors, m_notifyErrors, "NotifyErrors", notifyErrorsChanged)
-FONER_DEFINE_SETTER(setNotifyDevice, m_notifyDevice, "NotifyDevice", notifyDeviceChanged)
-FONER_DEFINE_SETTER(setAutoLoadContacts, m_autoLoadContacts, "AutoLoadContacts",
+KALLER_DEFINE_SETTER(setCloseToTray, m_closeToTray, "CloseToTray", closeToTrayChanged)
+KALLER_DEFINE_SETTER(setStartMinimised, m_startMinimised, "StartMinimised", startMinimisedChanged)
+KALLER_DEFINE_SETTER(setNotifyIncoming, m_notifyIncoming, "NotifyIncoming", notifyIncomingChanged)
+KALLER_DEFINE_SETTER(setNotifyMissed, m_notifyMissed, "NotifyMissed", notifyMissedChanged)
+KALLER_DEFINE_SETTER(setNotifyEnded, m_notifyEnded, "NotifyEnded", notifyEndedChanged)
+KALLER_DEFINE_SETTER(setNotifyErrors, m_notifyErrors, "NotifyErrors", notifyErrorsChanged)
+KALLER_DEFINE_SETTER(setNotifyDevice, m_notifyDevice, "NotifyDevice", notifyDeviceChanged)
+KALLER_DEFINE_SETTER(setAutoLoadContacts, m_autoLoadContacts, "AutoLoadContacts",
                     autoLoadContactsChanged)
-FONER_DEFINE_SETTER(setSortByLastCalled, m_sortByLastCalled, "SortByLastCalled",
+KALLER_DEFINE_SETTER(setSortByLastCalled, m_sortByLastCalled, "SortByLastCalled",
                     sortByLastCalledChanged)
 
-#undef FONER_DEFINE_SETTER
+#undef KALLER_DEFINE_SETTER

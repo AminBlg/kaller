@@ -65,13 +65,13 @@ void AgDevice::callAg(const QString &method, const QVariantList &args)
                 w->deleteLater();
                 const QDBusMessage reply = w->reply();
                 if (reply.type() == QDBusMessage::ErrorMessage) {
-                    qCWarning(FONER_TELEPHONY) << "AG" << method << "refused:"
+                    qCWarning(KALLER_TELEPHONY) << "AG" << method << "refused:"
                                                << reply.errorMessage();
                     Q_EMIT commandFailed(reply.errorMessage().isEmpty()
                                              ? method
                                              : reply.errorMessage());
                 } else {
-                    qCInfo(FONER_TELEPHONY) << "AG" << method << "accepted";
+                    qCInfo(KALLER_TELEPHONY) << "AG" << method << "accepted";
                 }
             });
 }
@@ -92,7 +92,7 @@ void AgDevice::setDbusProperty(const char *interfaceName, const QString &name, c
                 if (done)
                     done(reply.type() != QDBusMessage::ErrorMessage);
                 if (reply.type() == QDBusMessage::ErrorMessage) {
-                    qCWarning(FONER_TELEPHONY) << "AG property" << name << "refused:"
+                    qCWarning(KALLER_TELEPHONY) << "AG property" << name << "refused:"
                                                << reply.errorMessage();
                     Q_EMIT commandFailed(reply.errorMessage().isEmpty() ? name
                                                                         : reply.errorMessage());
@@ -114,7 +114,7 @@ void AgDevice::getDbusProperty(const char *interfaceName, const QString &name,
                 w->deleteLater();
                 const QDBusMessage reply = w->reply();
                 if (reply.type() != QDBusMessage::ReplyMessage || reply.arguments().isEmpty()) {
-                    qCDebug(FONER_TELEPHONY) << "AG property" << name << "unreadable:"
+                    qCDebug(KALLER_TELEPHONY) << "AG property" << name << "unreadable:"
                                              << reply.errorMessage();
                     return;
                 }
@@ -152,7 +152,7 @@ void AgDevice::routeAudioHere()
                 w->deleteLater();
                 const QDBusMessage reply = w->reply();
                 if (reply.type() == QDBusMessage::ErrorMessage) {
-                    qCWarning(FONER_TELEPHONY) << "transport Activate refused:"
+                    qCWarning(KALLER_TELEPHONY) << "transport Activate refused:"
                                                << reply.errorMessage();
                     Q_EMIT commandFailed(reply.errorMessage());
                 }

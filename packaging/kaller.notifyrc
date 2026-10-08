@@ -1,8 +1,8 @@
 [Global]
 IconName=call-start
-Comment=Foner
-Name=Foner
-DesktopEntry=org.unscale.foner
+Comment=Kaller
+Name=Kaller
+DesktopEntry=org.unscale.kaller
 
 [Event/incoming-call]
 Name=Incoming call

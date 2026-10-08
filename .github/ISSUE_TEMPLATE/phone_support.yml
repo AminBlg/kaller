@@ -5,11 +5,11 @@ body:
   - type: markdown
     attributes:
       value: |
-        Foner speaks to the phone through the PipeWire telephony interface over the
+        Kaller speaks to the phone through the PipeWire telephony interface over the
         Bluetooth hands-free profile. The output below tells us what your phone
         reports, which is what we need to add or fix support.
 
-        > **Known limitation:** Foner has run against two phones so far, one Android phone and one iPhone.
+        > **Known limitation:** Kaller has run against two phones so far, one Android phone and one iPhone.
 
   - type: checkboxes
     id: preflight

@@ -76,5 +76,5 @@ jobs:
 
       - name: Check the packaging files
         run: |
-          desktop-file-validate packaging/org.unscale.foner.desktop
-          appstreamcli validate --no-net packaging/org.unscale.foner.metainfo.xml
+          desktop-file-validate packaging/org.unscale.kaller.desktop
+          appstreamcli validate --no-net packaging/org.unscale.kaller.metainfo.xml

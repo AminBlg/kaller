@@ -3,14 +3,15 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 #
 # Checks the distribution detection in scripts/install.sh without touching the
-# system: a fake os-release, a fake PATH, and FONER_DETECT_ONLY=1.
+# system: a fake os-release, a fake PATH, and KALLER_DETECT_ONLY=1.
 #
 #   sh tests/install_sh_test.sh scripts/install.sh
 
 set -eu
 # The installer passes its own environment to ctest. A user on an unknown
-# distribution runs it with FONER_SKIP_PACKAGES=1, and that must not change
+# distribution runs it with KALLER_SKIP_PACKAGES=1, and that must not change
 # what these cases expect.
+unset KALLER_SKIP_PACKAGES KALLER_YES KALLER_PREFIX KALLER_REF
 unset FONER_SKIP_PACKAGES FONER_YES FONER_PREFIX FONER_REF
 SCRIPT=${1:?path to install.sh}
 WORK=$(mktemp -d)
@@ -25,7 +26,7 @@ done
 
 run() { # name, os-release body, extra PATH dir, expected exit, expected text
     printf '%s\n' "$2" > "$WORK/os-release"
-    out=$(PATH="$3:$WORK/bin" FONER_OS_RELEASE="$WORK/os-release" FONER_DETECT_ONLY=1 \
+    out=$(PATH="$3:$WORK/bin" KALLER_OS_RELEASE="$WORK/os-release" KALLER_DETECT_ONLY=1 \
           sh "$SCRIPT" 2>&1) && rc=0 || rc=$?
     if [ "$rc" -eq "$4" ] && printf '%s' "$out" | grep -q -- "$5"; then
         printf 'ok   %s\n' "$1"
@@ -43,14 +44,23 @@ run "ubuntu via ID" 'ID=ubuntu' "" 0 "family=debian"
 mkdir -p "$WORK/suse"; printf '#!/bin/sh\n' > "$WORK/suse/zypper"; chmod +x "$WORK/suse/zypper"
 run "unknown ID, zypper on PATH" 'ID=somesuse' "$WORK/suse" 0 "family=suse"
 
-run "unknown, no package manager" 'ID=voidish' "" 1 "FONER_SKIP_PACKAGES=1"
+run "unknown, no package manager" 'ID=voidish' "" 1 "KALLER_SKIP_PACKAGES=1"
 
-out=$(PATH="$WORK/bin" FONER_OS_RELEASE="$WORK/os-release" FONER_DETECT_ONLY=1 \
+out=$(PATH="$WORK/bin" KALLER_OS_RELEASE="$WORK/os-release" KALLER_DETECT_ONLY=1 \
+      KALLER_SKIP_PACKAGES=1 sh "$SCRIPT" 2>&1) && rc=0 || rc=$?
+if [ "$rc" -eq 0 ] && printf '%s' "$out" | grep -q "family=none"; then
+    printf 'ok   unknown with KALLER_SKIP_PACKAGES=1 continues\n'
+else
+    printf 'FAIL unknown with KALLER_SKIP_PACKAGES=1 (exit %s)\n%s\n' "$rc" "$out"; FAILED=1
+fi
+
+# A command line copied from a post that predates the rename.
+out=$(PATH="$WORK/bin" KALLER_OS_RELEASE="$WORK/os-release" KALLER_DETECT_ONLY=1 \
       FONER_SKIP_PACKAGES=1 sh "$SCRIPT" 2>&1) && rc=0 || rc=$?
 if [ "$rc" -eq 0 ] && printf '%s' "$out" | grep -q "family=none"; then
-    printf 'ok   unknown with FONER_SKIP_PACKAGES=1 continues\n'
+    printf 'ok   the old FONER_SKIP_PACKAGES=1 still works\n'
 else
-    printf 'FAIL unknown with FONER_SKIP_PACKAGES=1 (exit %s)\n%s\n' "$rc" "$out"; FAILED=1
+    printf 'FAIL the old FONER_SKIP_PACKAGES=1 (exit %s)\n%s\n' "$rc" "$out"; FAILED=1
 fi
 
 run "no os-release at all, no package manager" '' "" 1 "Unrecognised distribution"

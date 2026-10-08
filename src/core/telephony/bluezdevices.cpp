@@ -58,7 +58,7 @@ void BluezDevices::refresh()
                     // stack is a normal machine, and the address still shows.
                     // Logged because "the phone has no name" is otherwise
                     // impossible to explain.
-                    qCInfo(FONER_BLUEZ) << "BlueZ did not answer, so phones keep their"
+                    qCInfo(KALLER_BLUEZ) << "BlueZ did not answer, so phones keep their"
                                         << "addresses instead of their names:"
                                         << reply.errorMessage();
                     return;

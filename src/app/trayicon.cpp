@@ -18,14 +18,14 @@
 
 TrayIcon::TrayIcon(TelephonyClient *client, QWindow *window, QObject *parent)
     : QObject(parent)
-    , m_item(new KStatusNotifierItem(QStringLiteral("org.unscale.foner"), this))
+    , m_item(new KStatusNotifierItem(QStringLiteral("org.unscale.kaller"), this))
     , m_client(client)
     , m_window(window)
 {
     m_item->setCategory(KStatusNotifierItem::Communications);
-    m_item->setTitle(i18n("Foner"));
+    m_item->setTitle(i18n("Kaller"));
     m_item->setStatus(KStatusNotifierItem::Passive);
-    m_item->setIconByName(QStringLiteral("org.unscale.foner"));
+    m_item->setIconByName(QStringLiteral("org.unscale.kaller"));
     m_item->setAssociatedWindow(m_window);
 
     auto *menu = new QMenu();
@@ -86,14 +86,14 @@ void TrayIcon::updateForCallState()
         icon = QStringLiteral("network-disconnect");
         text = i18n("No phone connected");
     } else {
-        icon = QStringLiteral("org.unscale.foner");
+        icon = QStringLiteral("org.unscale.kaller");
         text = i18n("No calls");
     }
 
-    const QString title = phone.isEmpty() ? i18n("Foner")
-                                          : i18nc("application and phone", "Foner · %1", phone);
+    const QString title = phone.isEmpty() ? i18n("Kaller")
+                                          : i18nc("application and phone", "Kaller · %1", phone);
 
-    qCDebug(FONER_TRAY) << "status" << status << "icon" << icon << "phone" << phone;
+    qCDebug(KALLER_TRAY) << "status" << status << "icon" << icon << "phone" << phone;
 
     m_item->setStatus(status);
     m_item->setIconByName(icon);

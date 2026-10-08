@@ -2,9 +2,9 @@
 # SPDX-FileCopyrightText: 2026 AminBlg
 # SPDX-License-Identifier: GPL-3.0-or-later
 #
-# Builds and installs Foner.
+# Builds and installs Kaller.
 #
-#   curl -fsSLO https://raw.githubusercontent.com/AminBlg/foner/main/scripts/install.sh
+#   curl -fsSLO https://raw.githubusercontent.com/AminBlg/kaller/main/scripts/install.sh
 #   less install.sh && sh install.sh
 #
 # Refuses rather than guesses. An unknown distribution, a missing package, a
@@ -12,49 +12,56 @@
 # what to do, because a dialler that half-installs is worse than one that
 # never started. Nothing is installed until every dependency is present.
 #
-# FONER_PREFIX=~/.local     install without root
-# FONER_YES=1               do not ask before installing packages
-# FONER_REF=<tag or branch> build this ref instead of main
-# FONER_SKIP_PACKAGES=1     you installed the dependencies yourself; build only
-# FONER_OS_RELEASE=<file>   read this instead of /etc/os-release (tests)
-# FONER_DETECT_ONLY=1       print the distribution family and stop (tests)
+# KALLER_PREFIX=~/.local     install without root
+# KALLER_YES=1               do not ask before installing packages
+# KALLER_REF=<tag or branch> build this ref instead of main
+# KALLER_SKIP_PACKAGES=1     you installed the dependencies yourself; build only
+# KALLER_OS_RELEASE=<file>   read this instead of /etc/os-release (tests)
+# KALLER_DETECT_ONLY=1       print the distribution family and stop (tests)
 
 set -eu
 
-REPO=https://github.com/AminBlg/foner.git
+# Kaller was called Foner until 0.2.0. Accept the old variables, so a command
+# line copied from an older post still installs where its author meant.
+KALLER_PREFIX=${KALLER_PREFIX:-${FONER_PREFIX:-}}
+KALLER_YES=${KALLER_YES:-${FONER_YES:-}}
+KALLER_SKIP_PACKAGES=${KALLER_SKIP_PACKAGES:-${FONER_SKIP_PACKAGES:-}}
+KALLER_REF=${KALLER_REF:-${FONER_REF:-}}
+
+REPO=https://github.com/AminBlg/kaller.git
 # main, so a fix reaches new installs without a new release. CI and the tests
-# this script runs before installing guard against a bad commit. Set FONER_REF
+# this script runs before installing guard against a bad commit. Set KALLER_REF
 # to a tag to build a fixed release instead.
-REF=${FONER_REF:-main}
+REF=${KALLER_REF:-main}
 QT_MIN_MAJOR=6
 QT_MIN_MINOR=5
 
 say()  { printf '%s\n' "$*"; }
 step() { printf '\n==> %s\n' "$*"; }
-die()  { printf '\nfoner: %s\n' "$*" >&2; exit 1; }
+die()  { printf '\nkaller: %s\n' "$*" >&2; exit 1; }
 
 need() { command -v "$1" >/dev/null 2>&1 || die "$2"; }
 
 # ---------------------------------------------------------------- environment
 
-[ "$(uname -s)" = Linux ] || die "Foner talks to PipeWire and BlueZ over D-Bus, so it is Linux only.
+[ "$(uname -s)" = Linux ] || die "Kaller talks to PipeWire and BlueZ over D-Bus, so it is Linux only.
 Found: $(uname -s)."
 
 case "$(uname -m)" in
     x86_64|aarch64) ;;
     *) die "Untested on $(uname -m). Build it by hand if you want to try:
-  git clone $REPO && cd foner && cmake -S . -B build && cmake --build build" ;;
+  git clone $REPO && cd kaller && cmake -S . -B build && cmake --build build" ;;
 esac
 
 # Detection alone touches nothing, and CI runs its tests as root.
-if [ "$(id -u)" -eq 0 ] && [ "${FONER_DETECT_ONLY:-0}" != 1 ]; then
+if [ "$(id -u)" -eq 0 ] && [ "${KALLER_DETECT_ONLY:-0}" != 1 ]; then
     die "Do not run this as root. It asks for sudo only for the
 package install and the final copy, so the build stays yours."
 fi
 
 # ---------------------------------------------------------------- distribution
 
-OS_RELEASE=${FONER_OS_RELEASE:-/etc/os-release}
+OS_RELEASE=${KALLER_OS_RELEASE:-/etc/os-release}
 ID= ID_LIKE= PRETTY_NAME=
 if [ -r "$OS_RELEASE" ]; then
     # shellcheck disable=SC1090
@@ -82,21 +89,21 @@ if [ -z "$FAMILY" ]; then
     fi
 fi
 
-DEPS_HELP="Foner needs Qt 6.5, extra-cmake-modules, and these KDE Frameworks 6.8 packages
+DEPS_HELP="Kaller needs Qt 6.5, extra-cmake-modules, and these KDE Frameworks 6.8 packages
 with their development files: Kirigami, KCoreAddons, KDBusAddons, KI18n,
 KContacts, KNotifications, KConfig, KStatusNotifierItem, KItemModels.
 Calls also need PipeWire 1.4 or newer and BlueZ at run time."
 
 if [ -n "$FAMILY" ]; then
     say "Distribution: ${PRETTY_NAME:-${ID:-unknown}}  (handled as $FAMILY)"
-elif [ "${FONER_SKIP_PACKAGES:-0}" = 1 ]; then
+elif [ "${KALLER_SKIP_PACKAGES:-0}" = 1 ]; then
     say "Distribution: ${PRETTY_NAME:-${ID:-unknown}}  (unrecognised; building with what is installed)"
 else
     die "Unrecognised distribution: ${PRETTY_NAME:-${ID:-unknown}}.
 
 The script knows the package names for Arch, Debian, Ubuntu, Fedora, and
 openSUSE and their derivatives. On anything else, install the dependencies
-yourself and run the script again with FONER_SKIP_PACKAGES=1, which skips
+yourself and run the script again with KALLER_SKIP_PACKAGES=1, which skips
 the package step and lets cmake report anything still missing.
 
 $DEPS_HELP
@@ -104,15 +111,15 @@ $DEPS_HELP
 Nothing has been installed."
 fi
 
-if [ "${FONER_DETECT_ONLY:-0}" = 1 ]; then
+if [ "${KALLER_DETECT_ONLY:-0}" = 1 ]; then
     say "family=${FAMILY:-none}"
     exit 0
 fi
 
 # ---------------------------------------------------------------- packages
 
-if [ "${FONER_SKIP_PACKAGES:-0}" = 1 ]; then
-    step "Skipping the package install (FONER_SKIP_PACKAGES=1)"
+if [ "${KALLER_SKIP_PACKAGES:-0}" = 1 ]; then
+    step "Skipping the package install (KALLER_SKIP_PACKAGES=1)"
 else
 
 case "$FAMILY" in
@@ -160,7 +167,7 @@ need sudo "sudo is needed to install packages and is not present."
 if [ "$FAMILY" = debian ]; then
     sudo apt-get update >/dev/null 2>&1 || true
     if ! apt-cache show libkf6coreaddons-dev >/dev/null 2>&1; then
-        die "This release carries KDE Frameworks 5, and Foner needs Frameworks 6.
+        die "This release carries KDE Frameworks 5, and Kaller needs Frameworks 6.
 ${PRETTY_NAME:-This distribution} has no libkf6 development packages, so the
 build cannot succeed here whatever is installed. Debian 13, or Ubuntu 25.04
 and newer, will work.
@@ -180,7 +187,7 @@ fi
 
 step "Installing build dependencies"
 say "  $INSTALL $PKGS"
-if [ "${FONER_YES:-0}" != 1 ] && [ -t 0 ]; then
+if [ "${KALLER_YES:-0}" != 1 ] && [ -t 0 ]; then
     printf 'Continue? [Y/n] '
     read -r reply
     case "$reply" in [Nn]*) die "Stopped at your request." ;; esac
@@ -191,7 +198,7 @@ fi
 # shellcheck disable=SC2086
 $INSTALL $PKGS || die "The package manager refused. Nothing has been installed.
 Read its output above: usually a package under a different name on this release.
-If you can install the equivalents yourself, run again with FONER_SKIP_PACKAGES=1."
+If you can install the equivalents yourself, run again with KALLER_SKIP_PACKAGES=1."
 
 fi
 
@@ -209,7 +216,7 @@ if [ -n "$QT_VER" ]; then
     QT_MINOR=${QT_REST%%.*}
     if [ "$QT_MAJOR" -lt "$QT_MIN_MAJOR" ] \
        || { [ "$QT_MAJOR" -eq "$QT_MIN_MAJOR" ] && [ "$QT_MINOR" -lt "$QT_MIN_MINOR" ]; }; then
-        die "Qt $QT_VER is too old. Foner needs $QT_MIN_MAJOR.$QT_MIN_MINOR or newer.
+        die "Qt $QT_VER is too old. Kaller needs $QT_MIN_MAJOR.$QT_MIN_MINOR or newer.
 This usually means the distribution release is older than the app."
     fi
     say "Qt $QT_VER"
@@ -221,12 +228,12 @@ WORK=$(mktemp -d)
 trap 'rm -rf "$WORK"' EXIT INT TERM
 
 step "Fetching the source"
-git clone --depth 1 --branch "$REF" "$REPO" "$WORK/foner" \
+git clone --depth 1 --branch "$REF" "$REPO" "$WORK/kaller" \
     || die "Could not clone $REPO at $REF. Check the network and the name of the ref."
-cd "$WORK/foner"
+cd "$WORK/kaller"
 
 step "Building"
-PREFIX=${FONER_PREFIX:-/usr/local}
+PREFIX=${KALLER_PREFIX:-/usr/local}
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="$PREFIX" \
     || die "cmake could not configure the build. Its message above names the
 package that is missing; the list here does not cover this release."
@@ -248,20 +255,20 @@ esac
 
 # The build directory is deleted on exit, and cmake writes its list of
 # installed files there. Keep the list so the install can be removed later.
-MANIFEST_DIR=${XDG_DATA_HOME:-$HOME/.local/share}/foner
+MANIFEST_DIR=${XDG_DATA_HOME:-$HOME/.local/share}/kaller
 mkdir -p "$MANIFEST_DIR"
 cp build/install_manifest.txt "$MANIFEST_DIR/install_manifest.txt"
 
 # A desktop session takes its PATH from the systemd user manager, not from a
 # shell profile, so ~/.local/bin can be absent there even when the terminal
-# finds it. That produces "Could not find the program 'foner'" from the
+# finds it. That produces "Could not find the program 'kaller'" from the
 # launcher while the terminal runs it perfectly.
 case "$PREFIX" in
 "$HOME"*)
     if ! systemctl --user show-environment 2>/dev/null | grep -q "^PATH=.*$PREFIX/bin"; then
         say ""
         say "$PREFIX/bin is not on the session PATH, so the launcher will not find"
-        say "Foner even though your terminal will. Add it once:"
+        say "Kaller even though your terminal will. Add it once:"
         say ""
         say "  mkdir -p ~/.config/environment.d"
         say "  echo 'PATH=\$HOME/.local/bin:\$PATH' > ~/.config/environment.d/local-bin.conf"
@@ -272,23 +279,36 @@ case "$PREFIX" in
 esac
 
 step "Done"
-say "Run it with: foner"
-say "To remove it later, delete the files listed in $MANIFEST_DIR/install_manifest.txt."
+say "Run it with: kaller"
+say "To remove it later, run: xargs rm < $MANIFEST_DIR/install_manifest.txt"
 say ""
 
+# Foner 0.1.x installed under another name and does not go away by itself.
+OLD_MANIFEST=${XDG_DATA_HOME:-$HOME/.local/share}/foner/install_manifest.txt
+if [ -f "$OLD_MANIFEST" ]; then
+    say "Foner 0.1.x is still installed. Kaller keeps your contacts and settings, and"
+    say "you can remove the old program with: xargs rm < $OLD_MANIFEST"
+    say ""
+elif command -v foner >/dev/null 2>&1; then
+    say "Foner 0.1.x is still installed at $(command -v foner). Kaller keeps your contacts"
+    say "and settings. Remove the old program with your package manager, or delete that"
+    say "file and the foner entries under share/applications and share/icons."
+    say ""
+fi
+
 # The telephony D-Bus interface arrived in PipeWire 1.4. Older releases build
-# and run Foner but never show a phone, so say so here rather than let the
+# and run Kaller but never show a phone, so say so here rather than let the
 # window say "no phone connected" with no hint why.
 # Output looks like "Linked with libpipewire 1.6.8" on its last line.
 PW_VER=$(pipewire --version 2>/dev/null | sed -n 's/^Linked with libpipewire //p' | head -n1)
 case "$PW_VER" in
     0.*|1.0.*|1.1.*|1.2.*|1.3.*)
         say "PipeWire $PW_VER is installed. Calls need PipeWire 1.4 or newer, which"
-        say "carries the telephony module. Foner will start but report no phone until"
+        say "carries the telephony module. Kaller will start but report no phone until"
         say "this distribution ships PipeWire 1.4." ;;
     "")
-        say "PipeWire was not found on the PATH. Foner needs PipeWire 1.4 or newer with"
+        say "PipeWire was not found on the PATH. Kaller needs PipeWire 1.4 or newer with"
         say "its telephony module, and BlueZ, to reach a phone." ;;
     *)
-        say "PipeWire $PW_VER. Pair a phone over Bluetooth and Foner will find it." ;;
+        say "PipeWire $PW_VER. Pair a phone over Bluetooth and Kaller will find it." ;;
 esac

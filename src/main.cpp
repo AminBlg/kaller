@@ -20,6 +20,7 @@
 #include "core/recents/recentsmodel.h"
 #include "core/notifications/eventnotifier.h"
 #include "core/notifications/incomingcallnotifier.h"
+#include "core/settings/migration.h"
 #include "core/settings/settings.h"
 #include "app/trayicon.h"
 
@@ -131,20 +132,22 @@ int main(int argc, char *argv[])
     // QApplication, not QGuiApplication: the tray context menu is a QMenu.
     QApplication app(argc, argv);
     app.setQuitOnLastWindowClosed(false);
-    KLocalizedString::setApplicationDomain("foner");
+    // Before anything opens a file: KConfig and the caches are named after the app.
+    Migration::fromFoner();
+    KLocalizedString::setApplicationDomain("kaller");
     QQuickStyle::setStyle(QStringLiteral("org.kde.desktop"));
 
-    KAboutData about(QStringLiteral("foner"), i18n("Foner"), QStringLiteral("0.1.0"),
+    KAboutData about(QStringLiteral("kaller"), i18n("Kaller"), QStringLiteral("0.2.0"),
                      i18n("Make and receive phone calls through a paired Bluetooth phone"),
                      KAboutLicense::Unknown);
-    about.setDesktopFileName(QStringLiteral("org.unscale.foner"));
+    about.setDesktopFileName(QStringLiteral("org.unscale.kaller"));
     // KDBusService names itself from this. It must be set on the KAboutData, which
     // overwrites QCoreApplication's own domain in setApplicationData below.
     about.setOrganizationDomain(QByteArray("unscale.org"));
     KAboutData::setApplicationData(about);
-    // The app's own icon, not a generic theme handset. Falls back when foner is
+    // The app's own icon, not a generic theme handset. Falls back when kaller is
     // run without being installed.
-    app.setWindowIcon(QIcon::fromTheme(QStringLiteral("org.unscale.foner"),
+    app.setWindowIcon(QIcon::fromTheme(QStringLiteral("org.unscale.kaller"),
                                        QIcon::fromTheme(QStringLiteral("call-start"))));
 
     QCommandLineParser parser;
@@ -239,7 +242,7 @@ int main(int argc, char *argv[])
 
     const auto raiseWindow = [&tray]() { tray.showWindow(); };
 
-    // A later `foner tel:...` arrives here.
+    // A later `kaller tel:...` arrives here.
     QObject::connect(&service, &KDBusService::activateRequested, &app,
                      [&client, raiseWindow](const QStringList &arguments, const QString &) {
                          raiseWindow();

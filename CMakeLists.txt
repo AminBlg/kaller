@@ -3,7 +3,7 @@
 
 cmake_minimum_required(VERSION 3.16)
 
-project(foner VERSION 0.1.0 LANGUAGES CXX)
+project(kaller VERSION 0.2.0 LANGUAGES CXX)
 
 set(QT_MIN_VERSION "6.5.0")
 # 6.8, not 6.0: main.cpp uses KLocalizedQmlContext, which ki18n marks \since
@@ -55,32 +55,32 @@ add_subdirectory(src)
 add_subdirectory(tests)
 
 # Desktop file + icon (use data-dir based paths; KDE_*_DIR specifics are empty in a bare build)
-install(FILES packaging/org.unscale.foner.desktop
+install(FILES packaging/org.unscale.kaller.desktop
         DESTINATION "${KDE_INSTALL_DATADIR}/applications")
-install(FILES packaging/icons/org.unscale.foner.svg
+install(FILES packaging/icons/org.unscale.kaller.svg
         DESTINATION "${KDE_INSTALL_DATADIR}/icons/hicolor/scalable/apps")
 
 # AppStream metadata, without which the app never appears in Discover or
 # GNOME Software.
-install(FILES packaging/org.unscale.foner.metainfo.xml
+install(FILES packaging/org.unscale.kaller.metainfo.xml
         DESTINATION "${KDE_INSTALL_DATADIR}/metainfo")
 
 # Declares each notification event, so they are listed and configurable in the
 # system notification settings rather than arriving as anonymous popups.
-install(FILES packaging/foner.notifyrc
+install(FILES packaging/kaller.notifyrc
         DESTINATION ${KDE_INSTALL_KNOTIFYRCDIR})
 
 # Packaging. The same install rules feed every generator, so `cpack -G DEB`,
 # `cpack -G RPM` and `cpack -G TGZ` all produce the five installed files.
 # Dependencies are derived by dpkg-shlibdeps and rpmbuild from the linked
 # binary rather than listed here, where they would be a guess that rots.
-set(CPACK_PACKAGE_NAME "foner")
+set(CPACK_PACKAGE_NAME "kaller")
 set(CPACK_PACKAGE_VENDOR "AminBlg")
 set(CPACK_PACKAGE_VERSION "${PROJECT_VERSION}")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY
     "Make and receive phone calls through a paired Bluetooth phone")
-set(CPACK_PACKAGE_HOMEPAGE_URL "https://github.com/AminBlg/foner")
-set(CPACK_PACKAGE_CONTACT "https://github.com/AminBlg/foner/issues")
+set(CPACK_PACKAGE_HOMEPAGE_URL "https://github.com/AminBlg/kaller")
+set(CPACK_PACKAGE_CONTACT "https://github.com/AminBlg/kaller/issues")
 set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE")
 set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}")
 set(CPACK_GENERATOR "TGZ")

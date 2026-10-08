@@ -6,7 +6,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thanks for filing a bug report. Foner talks to the phone through PipeWire and
+        Thanks for filing a bug report. Kaller talks to the phone through PipeWire and
         BlueZ, so **phone, desktop, and version details are essential**. Issues without
         them are usually impossible to reproduce.
 
@@ -15,7 +15,7 @@ body:
     attributes:
       label: Pre-flight checklist
       options:
-        - label: I searched [existing issues](https://github.com/AminBlg/foner/issues?q=is%3Aissue) and this is not a duplicate.
+        - label: I searched [existing issues](https://github.com/AminBlg/kaller/issues?q=is%3Aissue) and this is not a duplicate.
           required: true
         - label: I am on the latest `main` build.
           required: true
@@ -25,7 +25,7 @@ body:
   - type: input
     id: version
     attributes:
-      label: Foner commit
+      label: Kaller commit
       description: Output of `git rev-parse --short HEAD` in the checkout you built.
       placeholder: e.g. 6b56853
     validations:
@@ -60,5 +60,5 @@ body:
     id: logs
     attributes:
       label: Log output
-      description: Run `QT_LOGGING_RULES="foner.*=true" foner` and paste the lines around the failure. Remove phone numbers first.
+      description: Run `QT_LOGGING_RULES="kaller.*=true" kaller` and paste the lines around the failure. Remove phone numbers first.
       render: text

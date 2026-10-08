@@ -19,7 +19,7 @@ BUILD=${BUILD_DIR:-build}
 export PATH="$HOME/.local/bin:$PATH"
 
 # Generated sources are build output and would swamp every count.
-EXCLUDES=(-x "*/foner_autogen/*" -x "*/fonerprobe_autogen/*" -x "*/.qt/*" -x "*/build/*")
+EXCLUDES=(-x "*/kaller_autogen/*" -x "*/kallerprobe_autogen/*" -x "*/.qt/*" -x "*/build/*")
 
 json_null_or() { [ -n "$1" ] && echo "$1" || echo null; }
 
@@ -83,7 +83,7 @@ if command -v npx >/dev/null; then
     # Bump the pin and the baseline together, in one commit.
     npx --yes jscpd@5.2.0 src --reporters json --output "$DUP_DIR" --silent \
         --min-lines 5 \
-        --ignore "**/foner_autogen/**,**/fonerprobe_autogen/**,**/.qt/**" \
+        --ignore "**/kaller_autogen/**,**/kallerprobe_autogen/**,**/.qt/**" \
         >/dev/null 2>&1
     if [ -f "$DUP_DIR/jscpd-report.json" ]; then
         DUP_PERCENT=$(jq '.statistics.total.percentage' "$DUP_DIR/jscpd-report.json" 2>/dev/null)

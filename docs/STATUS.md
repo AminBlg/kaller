@@ -1,4 +1,6 @@
-# Foner: project status
+# Kaller: project status
+
+Kaller was called Foner until version 0.2.0.
 
 Written 2026-09-02, and updated 2026-10-06 for the `v0.1.0` tag. A snapshot of what
 works, what does not, and what is known about the interface underneath. The README
@@ -10,7 +12,7 @@ does not catch that.
 
 ## Where it stands
 
-Foner is a working desktop dialler. Calls are placed, answered and ended against a real
+Kaller is a working desktop dialler. Calls are placed, answered and ended against a real
 phone, contacts and history arrive over Bluetooth, and the window survives being closed
 because the tray keeps it listening. It is used daily by its author on Arch with Plasma.
 
@@ -19,11 +21,11 @@ iPhone, but not against a second desktop or a second distribution.
 
 | | |
 |---|---|
-| Version | 0.1.0, tagged `v0.1.0` |
+| Version | 0.2.0 (0.1.0 was named Foner) |
 | Source | 6,183 lines of C++ and QML |
 | Tests | 3 binaries, 141 assertions |
 | Requires | Qt 6.5, KDE Frameworks 6.8, and 9 KDE frameworks |
-| Repository | `AminBlg/foner` |
+| Repository | `AminBlg/kaller` |
 
 ## Proved against a real phone
 

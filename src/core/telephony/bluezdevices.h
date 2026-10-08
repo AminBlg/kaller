@@ -11,7 +11,7 @@ class QDBusMessage;
 
 // Friendly names, icons and battery levels for paired Bluetooth devices.
 //
-// This is the only part of Foner on the system bus: org.pipewire.Telephony
+// This is the only part of Kaller on the system bus: org.pipewire.Telephony
 // exposes an address and nothing else, and the name a user recognises lives on
 // org.bluez.Device1. Everything here is best effort. A missing or unreachable
 // BlueZ leaves the address showing, which is what the app did before.

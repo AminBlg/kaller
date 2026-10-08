@@ -35,12 +35,12 @@ Kirigami.ApplicationWindow {
     // The phone's name lives here rather than in a row of its own. Plasma shows
     // the title in the taskbar and the window list, so it is already on screen.
     // Only the phone name: the shell appends applicationDisplayName itself, and
-    // spelling "Foner" here as well printed it twice.
+    // spelling "Kaller" here as well printed it twice.
     title: {
         root.bluezRevision
         const address = telephonyClient.selectedAddress
         if (address.length === 0)
-            return i18n("Foner")
+            return i18n("Kaller")
         return bluez.nameFor(address)
     }
 
@@ -103,7 +103,7 @@ Kirigami.ApplicationWindow {
         separator: true
     }
     readonly property Kirigami.Action aboutAction: Kirigami.Action {
-        text: i18n("About Foner")
+        text: i18n("About Kaller")
         icon.name: "help-about"
         onTriggered: root.pageStack.layers.push(aboutPage)
     }
@@ -255,7 +255,7 @@ Kirigami.ApplicationWindow {
     }
 
     pageStack.initialPage: Kirigami.Page {
-        // No header: the titlebar already says Foner and the lists need the height.
+        // No header: the titlebar already says Kaller and the lists need the height.
         globalToolBarStyle: Kirigami.ApplicationHeaderStyle.None
         padding: 0
 
@@ -1319,7 +1319,7 @@ Kirigami.ApplicationWindow {
                 wrapMode: Text.Wrap
                 font.pointSize: Kirigami.Theme.smallFont.pointSize
                 color: Kirigami.Theme.disabledTextColor
-                text: i18n("Foner can only announce an incoming call while it is running.")
+                text: i18n("Kaller can only announce an incoming call while it is running.")
             }
             Controls.CheckBox {
                 text: i18n("Start hidden in the tray")

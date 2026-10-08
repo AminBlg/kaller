@@ -29,8 +29,8 @@ that decides when a call has ended. Add a test with any change to those parts.
 
 ```
 /usr/lib/qt6/bin/qmllint src/app/qml/*.qml -I /usr/lib/qt6/qml
-desktop-file-validate packaging/org.unscale.foner.desktop
-appstreamcli validate --no-net packaging/org.unscale.foner.metainfo.xml
+desktop-file-validate packaging/org.unscale.kaller.desktop
+appstreamcli validate --no-net packaging/org.unscale.kaller.metainfo.xml
 ```
 
 `qmllint` reports `[unqualified]` for the context properties and for the
@@ -41,7 +41,7 @@ translation functions. Any other category is a defect.
 All logging is off by default. Turn it on for one run:
 
 ```
-QT_LOGGING_RULES="foner.*=true" build/bin/foner
+QT_LOGGING_RULES="kaller.*=true" build/bin/kaller
 ```
 
 Categories are declared in `src/core/logging.h`. Warnings are always on, so a
@@ -63,7 +63,7 @@ These parts can only be tested against a paired phone:
 - Mute, and the speaker level.
 - The contact and call-history import over Bluetooth.
 
-`build/bin/fonerprobe` prints the live D-Bus state. It is a tool, not a test.
+`build/bin/kallerprobe` prints the live D-Bus state. It is a tool, not a test.
 
 ## Licensing
 

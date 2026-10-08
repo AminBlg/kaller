@@ -1,10 +1,10 @@
-id: org.unscale.foner
+id: org.unscale.kaller
 runtime: org.kde.Platform
 runtime-version: '6.9'
 sdk: org.kde.Sdk
-command: foner
-rename-desktop-file: org.unscale.foner.desktop
-rename-icon: org.unscale.foner
+command: kaller
+rename-desktop-file: org.unscale.kaller.desktop
+rename-icon: org.unscale.kaller
 finish-args:
   # Wayland, with an X11 fallback.
   - --socket=wayland
@@ -25,11 +25,11 @@ finish-args:
   - --talk-name=org.pipewire.Telephony
   - --talk-name=org.bluez.obex
   - --talk-name=org.freedesktop.Notifications
-  # BlueZ proper is on the system bus, unlike everything above. Foner reads the
+  # BlueZ proper is on the system bus, unlike everything above. Kaller reads the
   # device alias, icon and battery from it, so this is a system-talk-name.
   - --system-talk-name=org.bluez
 modules:
-  - name: foner
+  - name: kaller
     buildsystem: cmake
     builddir: true
     config-opts:

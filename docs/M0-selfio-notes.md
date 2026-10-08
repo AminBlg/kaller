@@ -1,4 +1,4 @@
-# M0 — Live stack proof (org.unscale.foner)
+# M0 — Live stack proof (org.unscale.kaller)
 
 This is the log of the D-Bus session that proved the stack works, taken on
 2026-08-09 against a real paired phone. It is kept because several of the findings

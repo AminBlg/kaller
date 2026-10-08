@@ -5,8 +5,8 @@
 
 // QtInfoMsg as the default threshold: debug output stays quiet, warnings and
 // above always reach the journal.
-Q_LOGGING_CATEGORY(FONER_TELEPHONY, "foner.telephony", QtInfoMsg)
-Q_LOGGING_CATEGORY(FONER_CONTACTS, "foner.contacts", QtInfoMsg)
-Q_LOGGING_CATEGORY(FONER_BLUEZ, "foner.bluez", QtInfoMsg)
-Q_LOGGING_CATEGORY(FONER_NOTIFY, "foner.notifications", QtInfoMsg)
-Q_LOGGING_CATEGORY(FONER_TRAY, "foner.tray", QtInfoMsg)
+Q_LOGGING_CATEGORY(KALLER_TELEPHONY, "kaller.telephony", QtInfoMsg)
+Q_LOGGING_CATEGORY(KALLER_CONTACTS, "kaller.contacts", QtInfoMsg)
+Q_LOGGING_CATEGORY(KALLER_BLUEZ, "kaller.bluez", QtInfoMsg)
+Q_LOGGING_CATEGORY(KALLER_NOTIFY, "kaller.notifications", QtInfoMsg)
+Q_LOGGING_CATEGORY(KALLER_TRAY, "kaller.tray", QtInfoMsg)

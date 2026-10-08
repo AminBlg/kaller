@@ -9,11 +9,11 @@
 # worse than no hook. So this runs only the checks that are fast and catch the
 # mistakes actually made in this codebase. CI runs the whole gate.
 #
-# FONER_SKIP_HOOK=1 git commit   to bypass deliberately.
+# KALLER_SKIP_HOOK=1 git commit   to bypass deliberately.
 
 set -uo pipefail
 
-[ "${FONER_SKIP_HOOK:-0}" = 1 ] && exit 0
+[ "${KALLER_SKIP_HOOK:-0}" = 1 ] && exit 0
 
 cd "$(git rev-parse --show-toplevel)"
 FAILED=0
@@ -57,7 +57,7 @@ fi
 
 if [ "$FAILED" = 1 ]; then
     echo >&2
-    echo "Commit refused. Fix the above, or FONER_SKIP_HOOK=1 git commit to bypass." >&2
+    echo "Commit refused. Fix the above, or KALLER_SKIP_HOOK=1 git commit to bypass." >&2
     exit 1
 fi
 exit 0

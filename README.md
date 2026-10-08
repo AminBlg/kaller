@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="packaging/icons/org.unscale.foner.svg" width="128" alt="Foner icon">
+  <img src="packaging/icons/org.unscale.kaller.svg" width="128" alt="Kaller icon">
 </p>
 
-<h1 align="center">Foner</h1>
+<h1 align="center">Kaller</h1>
 
 <p align="center">
   <strong>📞 your phone is ringing in the other room. answer it from your desk</strong>.
@@ -14,8 +14,8 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/AminBlg/foner/actions/workflows/build.yml"><img alt="Build" src="https://github.com/AminBlg/foner/actions/workflows/build.yml/badge.svg"></a>
-  <a href="https://github.com/AminBlg/foner/releases/latest"><img alt="Latest release" src="https://img.shields.io/github/v/release/AminBlg/foner"></a>
+  <a href="https://github.com/AminBlg/kaller/actions/workflows/build.yml"><img alt="Build" src="https://github.com/AminBlg/kaller/actions/workflows/build.yml/badge.svg"></a>
+  <a href="https://github.com/AminBlg/kaller/releases/latest"><img alt="Latest release" src="https://img.shields.io/github/v/release/AminBlg/kaller"></a>
   <a href="LICENSE"><img alt="License: GPL-3.0-or-later" src="https://img.shields.io/badge/license-GPL--3.0--or--later-blue.svg"></a>
 </p>
 
@@ -34,9 +34,9 @@
 </picture>
 </p>
 
-Foner is a dialler for KDE Plasma. It sends commands to your phone over the Bluetooth hands-free profile (HFP). The call audio comes through this computer. The call itself stays on the phone and the mobile network. Foner has no account, no cloud service and no telemetry.
+Kaller is a dialler for KDE Plasma. It sends commands to your phone over the Bluetooth hands-free profile (HFP). The call audio comes through this computer. The call itself stays on the phone and the mobile network. Kaller has no account, no cloud service and no telemetry.
 
-Foner 0.1.0 is the first release. It was tested with one Android phone and one iPhone, on Arch Linux with Plasma. No other desktop is tested yet.
+Kaller was called Foner in version 0.1.0. It was tested with one Android phone and one iPhone, on Arch Linux with Plasma. No other desktop is tested yet.
 
 ## Requirements
 
@@ -44,25 +44,25 @@ Foner 0.1.0 is the first release. It was tested with one Android phone and one i
 - BlueZ.
 - A phone that is paired and connected over HFP.
 
-If one of these is missing, Foner starts and reports that no phone is connected.
+If one of these is missing, Kaller starts and reports that no phone is connected.
 
 ## Install
 
-Download the install script, read it, then run it as a normal user. The script installs the dependencies, builds Foner, runs the tests, and installs to `/usr/local`. It asks for sudo only for the package install and the final copy.
+Download the install script, read it, then run it as a normal user. The script installs the dependencies, builds Kaller, runs the tests, and installs to `/usr/local`. It asks for sudo only for the package install and the final copy.
 
 ```sh
-curl -fsSLO https://raw.githubusercontent.com/AminBlg/foner/main/scripts/install.sh
+curl -fsSLO https://raw.githubusercontent.com/AminBlg/kaller/main/scripts/install.sh
 less install.sh
 sh install.sh
 ```
 
-To install into `~/.local` instead, set `FONER_PREFIX`:
+To install into `~/.local` instead, set `KALLER_PREFIX`:
 
 ```sh
-FONER_PREFIX=~/.local sh install.sh
+KALLER_PREFIX=~/.local sh install.sh
 ```
 
-The script knows the package names for Arch, Debian, Ubuntu, Fedora, openSUSE and their derivatives. On another distribution, it stops and prints the dependency list. Install those dependencies yourself, then run the script again with `FONER_SKIP_PACKAGES=1`.
+The script knows the package names for Arch, Debian, Ubuntu, Fedora, openSUSE and their derivatives. On another distribution, it stops and prints the dependency list. Install those dependencies yourself, then run the script again with `KALLER_SKIP_PACKAGES=1`.
 
 | Distribution | Status |
 |---|---|
@@ -79,7 +79,7 @@ Only Arch Linux with Plasma ran against a real phone. The other rows come from t
 
 ## Build from source
 
-Foner needs Qt 6.5 and KDE Frameworks 6.8. `scripts/install.sh` lists the package names for each distribution. Install them, then run:
+Kaller needs Qt 6.5 and KDE Frameworks 6.8. `scripts/install.sh` lists the package names for each distribution. Install them, then run:
 
 ```sh
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
@@ -90,7 +90,7 @@ sudo cmake --install build
 
 ## Usage
 
-Run `foner`, then connect your phone. When the phone connects, Foner reads the phonebook and the call history.
+Run `kaller`, then connect your phone. When the phone connects, Kaller reads the phonebook and the call history.
 
 To try the contact list with no phone, open `docs/demo-contacts.vcf` with File > Import vCard. It holds invented contacts.
 
@@ -103,43 +103,55 @@ To try the contact list with no phone, open `docs/demo-contacts.vcf` with File >
 - Read the contacts and the call history from the phone, and keep them on disk.
 - Search contacts by name, by number, or by keypad letters: `254` finds "Ali".
 - Import and export vCard files.
-- Close the window, and Foner keeps running in the system tray.
+- Close the window, and Kaller keeps running in the system tray.
 - Open `tel:` links from other applications.
 
 Two calls at once, service codes and vCard export are built, but nobody tested them against a phone yet. [docs/STATUS.md](docs/STATUS.md) lists what works and the known limits.
 
-## Why Foner
+## Why Kaller
 
-KDE Connect tells you that the phone is ringing. Foner answers it. You dial and talk from the desktop, and the call audio comes through this computer. Windows has this in Phone Link. Foner brings it to Plasma.
+KDE Connect tells you that the phone is ringing. Kaller answers it. You dial and talk from the desktop, and the call audio comes through this computer. Windows has this in Phone Link. Kaller brings it to Plasma.
 
-[HandsFree for Linux](https://github.com/PavelTarlev1/handsfree-linux) does a similar job with its own hands-free stack. Its README asks you to keep WirePlumber from claiming the hands-free role. Foner uses the telephony module that ships with PipeWire 1.4, so it works with the audio stack that you already run.
+[HandsFree for Linux](https://github.com/PavelTarlev1/handsfree-linux) does a similar job with its own hands-free stack. Its README asks you to keep WirePlumber from claiming the hands-free role. Kaller uses the telephony module that ships with PipeWire 1.4, so it works with the audio stack that you already run.
 
 ## FAQ
 
-Does KDE Connect do this? KDE Connect lists notifications, SMS, a shared clipboard and remote control in its README. That list has no call dialing, and the wiki was not checked. Foner covers the calls.
+Does KDE Connect do this? KDE Connect lists notifications, SMS, a shared clipboard and remote control in its README. That list has no call dialing, and the wiki was not checked. Kaller covers the calls.
 
-Which phones work? Foner was tested with one Android phone and one iPhone. Any phone that pairs over the Bluetooth hands-free profile can connect in theory, but only those two ran.
+Which phones work? Kaller was tested with one Android phone and one iPhone. Any phone that pairs over the Bluetooth hands-free profile can connect in theory, but only those two ran.
 
-Do I need a phone to try it? You can start Foner without one and import `docs/demo-contacts.vcf` to try the contact search. Calls need a paired phone.
+Do I need a phone to try it? You can start Kaller without one and import `docs/demo-contacts.vcf` to try the contact search. Calls need a paired phone.
 
-Does it work outside Plasma? Foner is built with Qt and KDE Frameworks. Other desktops were not tested.
+Does it work outside Plasma? Kaller is built with Qt and KDE Frameworks. Other desktops were not tested.
 
-Does Foner send my contacts anywhere? Foner has no account and no cloud service. It keeps the phonebook and the call history on your disk.
+Does Kaller send my contacts anywhere? Kaller has no account and no cloud service. It keeps the phonebook and the call history on your disk.
 
 ## Roadmap
 
 - Keyboard-only operation. The keypad keys cannot be reached with Tab yet.
 - Test more phones and more desktops.
-- Package Foner for more distributions.
+- Package Kaller for more distributions.
 
 [docs/STATUS.md](docs/STATUS.md) has the details.
 
-## Uninstall
+## If you installed Foner 0.1.0
 
-The install script saves the list of installed files in `~/.local/share/foner/install_manifest.txt`. To delete the files on that list, run:
+Kaller moves your settings and contacts over on its first start. The old program stays on your disk until you remove it.
+
+If you installed Foner with the install script on or after 2026-10-06, remove it with this command:
 
 ```sh
 xargs rm < ~/.local/share/foner/install_manifest.txt
+```
+
+If you installed it earlier, delete `foner` from the `bin` folder of your install prefix. Delete the `org.unscale.foner` files under `share` as well.
+
+## Uninstall
+
+The install script saves the list of installed files in `~/.local/share/kaller/install_manifest.txt`. To delete the files on that list, run:
+
+```sh
+xargs rm < ~/.local/share/kaller/install_manifest.txt
 ```
 
 If you installed to `/usr/local`, run the same command with `sudo` before `xargs`.
@@ -154,19 +166,19 @@ If you installed to `/usr/local`, run the same command with `sudo` before `xargs
 
 ## Star history
 
-<a href="https://star-history.com/#AminBlg/foner&Date">
+<a href="https://star-history.com/#AminBlg/kaller&Date">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=AminBlg/foner&type=Date&theme=dark">
-    <img alt="Star history chart for AminBlg/foner" src="https://api.star-history.com/svg?repos=AminBlg/foner&type=Date">
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=AminBlg/kaller&type=Date&theme=dark">
+    <img alt="Star history chart for AminBlg/kaller" src="https://api.star-history.com/svg?repos=AminBlg/kaller&type=Date">
   </picture>
 </a>
 
 ## Repo activity
 
-![Repobeats analytics for AminBlg/foner](https://repobeats.com/AminBlg/foner "Repobeats analytics image")
+![Repobeats analytics for AminBlg/kaller](https://repobeats.com/AminBlg/kaller "Repobeats analytics image")
 
 ## License
 
 GPL-3.0-or-later. See [LICENSE](LICENSE).
 
-Foner is an independent project. It is not affiliated with Microsoft or KDE e.V. Phone Link is a trademark of Microsoft.
+Kaller is an independent project. It is not affiliated with Microsoft or KDE e.V. Phone Link is a trademark of Microsoft.

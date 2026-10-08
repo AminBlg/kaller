@@ -250,7 +250,7 @@ void TelephonyClient::refreshDevices()
 
                 const QDBusMessage reply = w->reply();
                 if (reply.type() != QDBusMessage::ReplyMessage || reply.arguments().isEmpty()) {
-                    qCWarning(FONER_TELEPHONY) << "GetManagedObjects failed:" << reply.errorMessage();
+                    qCWarning(KALLER_TELEPHONY) << "GetManagedObjects failed:" << reply.errorMessage();
                     return;
                 }
 
@@ -316,7 +316,7 @@ void TelephonyClient::refreshCalls()
                     if (reply.type() == QDBusMessage::ReplyMessage && !reply.arguments().isEmpty())
                         ingestCalls(parseCallProps(reply.arguments().at(0)));
                     else
-                        qCWarning(FONER_TELEPHONY) << "GetCalls failed:" << reply.errorMessage();
+                        qCWarning(KALLER_TELEPHONY) << "GetCalls failed:" << reply.errorMessage();
 
                     if (m_pendingCallReplies > 0 && --m_pendingCallReplies == 0)
                         finishCallRefresh();
@@ -348,7 +348,7 @@ void TelephonyClient::ingestCalls(const QVariantMap &calls)
 
         const QString prev = m_prevStateByPath.value(it.key());
         if (call->state() != prev) {
-            qCDebug(FONER_TELEPHONY) << "call" << it.key() << ":" << prev << "->"
+            qCDebug(KALLER_TELEPHONY) << "call" << it.key() << ":" << prev << "->"
                                      << call->state() << "number" << call->remoteNumber();
         }
         if (call->state() == QLatin1String("incoming") && prev != QLatin1String("incoming"))
@@ -384,7 +384,7 @@ void TelephonyClient::finishCallRefresh()
             const qint64 activeSince = m_activeSinceByPath.value(p, 0);
             // Never reached "active" means never answered.
             const qint64 durationSec = activeSince > 0 ? (now - activeSince) / 1000 : 0;
-            qCDebug(FONER_TELEPHONY) << "call dropped" << p << "number" << number
+            qCDebug(KALLER_TELEPHONY) << "call dropped" << p << "number" << number
                                      << "incoming" << incoming << "duration" << durationSec;
             m_pendingEnd.markDropped(p, number, incoming, durationSec, now);
             retired.append(call);
@@ -453,7 +453,7 @@ void TelephonyClient::openBluetoothSettings()
             // startDetached reports that the process started, not that it kept
             // running, so this is "handed off", never "succeeded".
             if (QProcess::startDetached(launcher, args)) {
-                qCDebug(FONER_BLUEZ) << "handed Bluetooth settings to" << launcher
+                qCDebug(KALLER_BLUEZ) << "handed Bluetooth settings to" << launcher
                                      << "for" << entry;
                 return;
             }
@@ -473,7 +473,7 @@ void TelephonyClient::openBluetoothSettings()
         if (QStandardPaths::findExecutable(command.first()).isEmpty())
             continue;
         if (QProcess::startDetached(command.first(), command.mid(1))) {
-            qCDebug(FONER_BLUEZ) << "handed Bluetooth settings to" << command.first();
+            qCDebug(KALLER_BLUEZ) << "handed Bluetooth settings to" << command.first();
             return;
         }
     }
@@ -481,7 +481,7 @@ void TelephonyClient::openBluetoothSettings()
     // Static, so there is no instance to report through; the log is the only
     // channel. The button simply does nothing on a desktop with no Bluetooth
     // settings installed, which is the same as before.
-    qCWarning(FONER_BLUEZ) << "found no Bluetooth settings application to open";
+    qCWarning(KALLER_BLUEZ) << "found no Bluetooth settings application to open";
 }
 
 void TelephonyClient::setSelectedDevice(int row)

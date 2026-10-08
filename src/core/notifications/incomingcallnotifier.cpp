@@ -26,7 +26,7 @@ void IncomingCallNotifier::onRingingChanged()
 {
     if (m_client->calls()->incomingCallIndex() >= 0)
         return;
-    qCDebug(FONER_NOTIFY) << "ringing stopped, dropping path" << m_objectPath
+    qCDebug(KALLER_NOTIFY) << "ringing stopped, dropping path" << m_objectPath
                           << "notification alive:" << !m_notification.isNull();
     m_objectPath.clear();
     if (m_notification) {
@@ -40,11 +40,11 @@ void IncomingCallNotifier::onIncomingCall(const QString &objectPath, const QStri
     m_objectPath = objectPath;
     m_number = number;
 
-    qCDebug(FONER_NOTIFY) << "incoming call" << objectPath << "number" << number;
+    qCDebug(KALLER_NOTIFY) << "incoming call" << objectPath << "number" << number;
 
     // Silences the desktop notification only; the in-app sheet still appears.
     if (m_settings && !m_settings->notifyIncoming()) {
-        qCDebug(FONER_NOTIFY) << "notification suppressed by settings";
+        qCDebug(KALLER_NOTIFY) << "notification suppressed by settings";
         return;
     }
 
@@ -67,21 +67,21 @@ void IncomingCallNotifier::onIncomingCall(const QString &objectPath, const QStri
     connect(declineAction, &KNotificationAction::activated, this, &IncomingCallNotifier::onDecline);
 
     connect(n, &KNotification::closed, this, []() {
-        qCDebug(FONER_NOTIFY) << "notification closed by the server or the user";
+        qCDebug(KALLER_NOTIFY) << "notification closed by the server or the user";
     });
 
     m_notification = n;
     n->sendEvent();
-    qCDebug(FONER_NOTIFY) << "notification posted for" << m_objectPath;
+    qCDebug(KALLER_NOTIFY) << "notification posted for" << m_objectPath;
 }
 
 void IncomingCallNotifier::onAnswer()
 {
     // The path is cleared the moment the call stops ringing, so a stale popup
     // that survived on screen cannot answer a call that is already up.
-    qCDebug(FONER_NOTIFY) << "answer action, path" << m_objectPath;
+    qCDebug(KALLER_NOTIFY) << "answer action, path" << m_objectPath;
     if (m_objectPath.isEmpty()) {
-        qCWarning(FONER_NOTIFY) << "answer pressed on a notification whose call is gone";
+        qCWarning(KALLER_NOTIFY) << "answer pressed on a notification whose call is gone";
         return;
     }
     if (m_client)
@@ -90,9 +90,9 @@ void IncomingCallNotifier::onAnswer()
 
 void IncomingCallNotifier::onDecline()
 {
-    qCDebug(FONER_NOTIFY) << "decline action, path" << m_objectPath;
+    qCDebug(KALLER_NOTIFY) << "decline action, path" << m_objectPath;
     if (m_objectPath.isEmpty()) {
-        qCWarning(FONER_NOTIFY) << "decline pressed on a notification whose call is gone";
+        qCWarning(KALLER_NOTIFY) << "decline pressed on a notification whose call is gone";
         return;
     }
     if (m_client)

@@ -110,7 +110,7 @@ Q_SIGNALS:
 
 public Q_SLOTS:
     void clear();
-    // Shows KDE Connect's cached contacts. Not written to Foner's own cache, so a
+    // Shows KDE Connect's cached contacts. Not written to Kaller's own cache, so a
     // later pull from the phone replaces them and nothing stale outlives it.
     void loadFromKdeConnect();
 

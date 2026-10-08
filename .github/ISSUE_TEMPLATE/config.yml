@@ -1,8 +1,8 @@
 blank_issues_enabled: false
 contact_links:
   - name: 📖 Documentation
-    url: https://github.com/AminBlg/foner/tree/main/docs
+    url: https://github.com/AminBlg/kaller/tree/main/docs
     about: Status, install, and interface notes. Read here first.
   - name: 🔒 Report a Security Vulnerability
-    url: https://github.com/AminBlg/foner/security/advisories/new
+    url: https://github.com/AminBlg/kaller/security/advisories/new
     about: Privately disclose security issues. Do NOT open a public issue for them.

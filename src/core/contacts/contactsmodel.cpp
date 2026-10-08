@@ -88,7 +88,7 @@ void ContactsModel::noteCall(const QString &number, const QDateTime &when)
 
     m_lastCalledByKey.insert(key, when);
     saveLastCalled();
-    qCDebug(FONER_CONTACTS) << "last called" << key << when;
+    qCDebug(KALLER_CONTACTS) << "last called" << key << when;
 
     if (!m_contacts.isEmpty())
         Q_EMIT dataChanged(index(0, 0), index(m_contacts.size() - 1, 0), {LastCalledRole});
@@ -103,7 +103,7 @@ void ContactsModel::loadLastCalled()
     in.setVersion(QDataStream::Qt_6_0);
     in >> m_lastCalledByKey;
     if (in.status() != QDataStream::Ok) {
-        qCWarning(FONER_CONTACTS) << "last-called store is unreadable, starting empty";
+        qCWarning(KALLER_CONTACTS) << "last-called store is unreadable, starting empty";
         m_lastCalledByKey.clear();
     }
 }
@@ -114,7 +114,7 @@ void ContactsModel::saveLastCalled() const
     QDir().mkpath(QFileInfo(path).absolutePath());
     QFile f(path);
     if (!f.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-        qCWarning(FONER_CONTACTS) << "cannot write the last-called store:" << f.errorString();
+        qCWarning(KALLER_CONTACTS) << "cannot write the last-called store:" << f.errorString();
         return;
     }
     QDataStream out(&f);
@@ -271,7 +271,7 @@ void ContactsModel::loadFromKdeConnect()
     }
     setContacts(contacts);
     m_fromKdeConnect = true;
-    qCInfo(FONER_CONTACTS) << "loaded" << contacts.size() << "contacts from" << files.size()
+    qCInfo(KALLER_CONTACTS) << "loaded" << contacts.size() << "contacts from" << files.size()
                            << "KDE Connect cards";
 }
 
@@ -324,7 +324,7 @@ bool ContactsModel::exportVcfFile(const QString &filePath)
         return false;
     }
 
-    qCInfo(FONER_CONTACTS) << "exported" << addressees.size() << "contacts to" << path;
+    qCInfo(KALLER_CONTACTS) << "exported" << addressees.size() << "contacts to" << path;
     return true;
 }
 

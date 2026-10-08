@@ -84,7 +84,7 @@ EventNotifier::EventNotifier(TelephonyClient *client, ContactsModel *contacts,
 
         if (count > previous) {
             notify(QStringLiteral("phone-connected"), i18n("Phone connected"),
-                   i18n("Foner can place and answer calls."),
+                   i18n("Kaller can place and answer calls."),
                    QStringLiteral("smartphone"));
         } else if (count == 0) {
             notify(QStringLiteral("phone-disconnected"), i18n("Phone disconnected"),

@@ -14,3 +14,10 @@ sharp image on a high-density display without a large file.
 Do not photograph a real phone number. The demo phonebook in
 `docs/demo-contacts.vcf` uses invented numbers. They sit in a live mobile range,
 so never dial one.
+
+## Provenance
+
+The screenshots come from version 0.1.0, which was named Foner. For version
+0.2.0 the window title text was re-rendered as "Kaller", in the same font and
+size. The rest of each image is unchanged. When the interface changes, connect
+a phone and retake them.

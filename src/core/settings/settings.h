@@ -8,7 +8,7 @@
 
 #include <KSharedConfig>
 
-// User preferences, kept in ~/.config/fonerrc by KConfig.
+// User preferences, kept in ~/.config/kallerrc by KConfig.
 class Settings : public QObject
 {
     Q_OBJECT

@@ -601,7 +601,7 @@ private Q_SLOTS:
         ContactsModel model;
         model.loadFromVcfFile(in.fileName());
         QCOMPARE(model.rowCount(), 1);
-        QVERIFY(!model.exportVcfFile(QStringLiteral("/proc/foner-cannot-write.vcf")));
+        QVERIFY(!model.exportVcfFile(QStringLiteral("/proc/kaller-cannot-write.vcf")));
         QVERIFY(!model.lastError().isEmpty());
     }
 

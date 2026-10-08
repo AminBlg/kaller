@@ -3,12 +3,12 @@
 #
 # Maintainer: AminBlg <https://github.com/AminBlg>
 
-pkgname=foner
-pkgver=0.1.0
+pkgname=kaller
+pkgver=0.2.0
 pkgrel=1
 pkgdesc="Make and receive phone calls through a paired Bluetooth phone, from your KDE desktop"
 arch=('x86_64' 'aarch64')
-url="https://github.com/AminBlg/foner"
+url="https://github.com/AminBlg/kaller"
 license=('GPL-3.0-or-later')
 depends=(
   'qt6-base'
@@ -24,7 +24,7 @@ depends=(
   'kitemmodels'
 )
 makedepends=('cmake' 'ninja' 'extra-cmake-modules' 'qt6-tools' 'git')
-# Foner places no calls on its own. The audio gateway lives in PipeWire and the
+# Kaller places no calls on its own. The audio gateway lives in PipeWire and the
 # phonebook comes from obexd, so without these it starts and finds no device.
 optdepends=(
   'pipewire: the telephony service that talks to the phone'

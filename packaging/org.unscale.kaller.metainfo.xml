@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop-application">
-  <id>org.unscale.foner</id>
+  <id>org.unscale.kaller</id>
 
-  <name>Foner</name>
+  <name>Kaller</name>
   <summary>Calls through your phone</summary>
 
   <metadata_license>CC0-1.0</metadata_license>
@@ -10,11 +10,11 @@
 
   <description>
     <p>
-      Foner turns a paired Bluetooth phone into a phone you can answer from your
-      desktop. Calls stay on the phone and on the mobile network. Foner sends the
+      Kaller turns a paired Bluetooth phone into a phone you can answer from your
+      desktop. Calls stay on the phone and on the mobile network. Kaller sends the
       commands and carries the audio, so you can keep the phone in your pocket.
     </p>
-    <p>Foner can:</p>
+    <p>Kaller can:</p>
     <ul>
       <li>Dial a number, answer a call, and end a call.</li>
       <li>Search your contacts by name or by number, including keypad search.</li>
@@ -24,7 +24,7 @@
       <li>Open a telephone link from any other application.</li>
     </ul>
     <p>
-      Foner needs PipeWire with telephony support, BlueZ, and a phone that is paired
+      Kaller needs PipeWire with telephony support, BlueZ, and a phone that is paired
       and connected over the hands-free profile.
     </p>
   </description>
@@ -33,19 +33,19 @@
     <name>AminBlg</name>
   </developer>
 
-  <url type="homepage">https://github.com/AminBlg/foner</url>
-  <url type="bugtracker">https://github.com/AminBlg/foner/issues</url>
-  <url type="vcs-browser">https://github.com/AminBlg/foner</url>
+  <url type="homepage">https://github.com/AminBlg/kaller</url>
+  <url type="bugtracker">https://github.com/AminBlg/kaller/issues</url>
+  <url type="vcs-browser">https://github.com/AminBlg/kaller</url>
 
   <branding>
     <color type="primary" scheme_preference="light">#c7e6d0</color>
     <color type="primary" scheme_preference="dark">#12432a</color>
   </branding>
 
-  <launchable type="desktop-id">org.unscale.foner.desktop</launchable>
+  <launchable type="desktop-id">org.unscale.kaller.desktop</launchable>
 
   <provides>
-    <binary>foner</binary>
+    <binary>kaller</binary>
   </provides>
 
   <categories>
@@ -63,6 +63,12 @@
   <content_rating type="oars-1.1"/>
 
   <releases>
+    <release version="0.2.0" date="2026-10-08">
+      <description>
+        <p>Foner is now Kaller. Settings and contacts move over on the first start.</p>
+        <p>The selected phone no longer changes when another phone leaves. Mute shows the phone's answer. Clearing contacts also clears the dialled numbers. The call history imports once per phone. Contacts can come from KDE Connect.</p>
+      </description>
+    </release>
     <release version="0.1.0" date="2026-10-06">
       <description>
         <p>First release.</p>
