@@ -132,6 +132,7 @@ void ContactsModel::ingestVcf(const QByteArray &data)
 {
     const QList<ContactItem> contacts = parseVcf(data);
     setContacts(contacts);
+    m_fromKdeConnect = false;
     if (contacts.isEmpty())
         return;
 
@@ -208,16 +209,70 @@ void ContactsModel::clear()
 {
     beginResetModel();
     m_contacts.clear();
+    m_fromKdeConnect = false;
     endResetModel();
     Q_EMIT countChanged();
     // Or the next start would bring them all back.
     QFile::remove(cachePath());
+    // Every number ever dialled sits in this store. Clearing the contacts and
+    // keeping it would leave the dialling history on disk with no way to remove it.
+    m_lastCalledByKey.clear();
+    QFile::remove(lastCalledPath());
 }
 
 void ContactsModel::loadFromPhone(const QString &deviceAddress)
 {
     setLoading(true);
     m_pbap->pull(deviceAddress, QStringLiteral("int"), QStringLiteral("pb"));
+}
+
+QStringList ContactsModel::kdeConnectCardFiles(const QString &root)
+{
+    const QString base = root.isEmpty()
+        ? QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation)
+            + QStringLiteral("/kpeoplevcard")
+        : root;
+
+    QStringList files;
+    const QDir baseDir(base);
+    const QStringList devices = baseDir.entryList({QStringLiteral("kdeconnect-*")},
+                                                  QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name);
+    for (const QString &device : devices) {
+        const QDir dir(baseDir.filePath(device));
+        const QStringList cards = dir.entryList({QStringLiteral("*.vcf")}, QDir::Files, QDir::Name);
+        for (const QString &card : cards)
+            files.append(dir.filePath(card));
+    }
+    return files;
+}
+
+void ContactsModel::loadFromKdeConnect()
+{
+    const QStringList files = kdeConnectCardFiles();
+    if (files.isEmpty()) {
+        setLastError(i18n("KDE Connect has no contacts here. Pair a phone in KDE Connect and "
+                          "turn on its Contacts plugin."));
+        return;
+    }
+
+    // One file at a time: the plugin writes no newline after END:VCARD, so
+    // joining the files would weld one card onto the next and parse as one.
+    // Two paired phones both appear; a number they share is listed twice.
+    QList<ContactItem> contacts;
+    for (const QString &path : files) {
+        QFile f(path);
+        if (!f.open(QIODevice::ReadOnly))
+            continue;
+        contacts.append(parseVcf(f.readAll()));
+    }
+    if (contacts.isEmpty()) {
+        setLastError(i18n("Could not read any contact from KDE Connect."));
+        return;
+    }
+    setContacts(contacts);
+    m_fromKdeConnect = true;
+    qCInfo(FONER_CONTACTS) << "loaded" << contacts.size() << "contacts from" << files.size()
+                           << "KDE Connect cards";
 }
 
 void ContactsModel::loadFromVcfFile(const QString &filePath)

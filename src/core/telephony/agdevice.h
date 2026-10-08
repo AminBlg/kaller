@@ -41,7 +41,9 @@ public Q_SLOTS:
     // to this machine; RejectSCO=true refuses one, which leaves the audio on
     // the handset. Both verified by introspection on AudioGatewayTransport1.
     void routeAudioHere();
-    void setMicrophoneVolume(uchar volume);
+    // done(ok) runs when the phone has answered. The cached volume changes only
+    // on success, so a refused write cannot leave the cache claiming a mute.
+    void setMicrophoneVolume(uchar volume, std::function<void(bool)> done = {});
 
 Q_SIGNALS:
     void addressChanged();
@@ -53,7 +55,8 @@ private Q_SLOTS:
 
 private:
     void callAg(const QString &method, const QVariantList &args = {});
-    void setDbusProperty(const char *interfaceName, const QString &name, const QVariant &value);
+    void setDbusProperty(const char *interfaceName, const QString &name, const QVariant &value,
+                         std::function<void(bool)> done = {});
     void getDbusProperty(const char *interfaceName, const QString &name,
                          std::function<void(const QVariant &)> onValue);
 

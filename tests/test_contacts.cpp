@@ -505,6 +505,79 @@ private Q_SLOTS:
         }
     }
 
+    void clearingContactsAlsoRemovesTheDialledNumbers()
+    {
+        // The last-called store holds every number ever dialled. Clearing the
+        // phonebook used to leave it on disk.
+        ContactsModel model;
+        model.noteCall(QStringLiteral("+213550000041"),
+                       QDateTime::fromString(QStringLiteral("20260101T080000"),
+                                             QStringLiteral("yyyyMMddTHHmmss")));
+        QVERIFY(QFile::exists(ContactsModel::lastCalledPath()));
+
+        model.clear();
+        QVERIFY(!QFile::exists(ContactsModel::lastCalledPath()));
+
+        // A fresh model must not bring the number back from disk.
+        ContactsModel again;
+        const QByteArray data =
+            "BEGIN:VCARD\r\nVERSION:2.1\r\nFN:Test Person\r\n"
+            "TEL;CELL:+213550000041\r\nEND:VCARD\r\n";
+        QTemporaryFile f;
+        QVERIFY(f.open());
+        f.write(data);
+        f.close();
+        again.loadFromVcfFile(f.fileName());
+        RecentsModel recents;
+        again.setRecents(&recents);
+        QVERIFY(!again.lastCalled(0).isValid());
+    }
+
+    void readsKdeConnectCardsThatHaveNoTrailingNewline()
+    {
+        // KDE Connect writes one file per contact and no newline after END:VCARD.
+        // Joined, the files weld into one card; read one at a time they do not.
+        QTemporaryDir root;
+        QVERIFY(root.isValid());
+        const QString device = root.filePath(QStringLiteral("kdeconnect-abc"));
+        QVERIFY(QDir().mkpath(device));
+        const auto write = [&](const QString &name, const QByteArray &body) {
+            QFile f(QDir(device).filePath(name));
+            QVERIFY(f.open(QIODevice::WriteOnly));
+            f.write(body);
+        };
+        write(QStringLiteral("a.vcf"), "BEGIN:VCARD\r\nVERSION:3.0\r\nFN:Ali Amrani\r\n"
+                                       "TEL;CELL:+213550000012\r\nEND:VCARD");
+        write(QStringLiteral("b.vcf"), "BEGIN:VCARD\r\nVERSION:3.0\r\nFN:Dalia Cherif\r\n"
+                                       "TEL;CELL:+213550000015\r\nEND:VCARD");
+        write(QStringLiteral("notes.txt"), "not a card");
+        QVERIFY(QDir().mkpath(root.filePath(QStringLiteral("other-device"))));
+
+        const QStringList files = ContactsModel::kdeConnectCardFiles(root.path());
+        QCOMPARE(files.size(), 2);
+
+        QList<ContactItem> all;
+        for (const QString &path : files) {
+            QFile f(path);
+            QVERIFY(f.open(QIODevice::ReadOnly));
+            all.append(ContactsModel::parseVcf(f.readAll()));
+        }
+        QCOMPARE(all.size(), 2);
+        QCOMPARE(all.at(0).name, QStringLiteral("Ali Amrani"));
+        QCOMPARE(all.at(1).numbers.value(0), QStringLiteral("+213550000015"));
+    }
+
+    void loadingFromKdeConnectWithNothingThereReportsIt()
+    {
+        // XDG_DATA_HOME is the scratch directory, which holds no kpeoplevcard.
+        ContactsModel model;
+        model.clear();
+        QSignalSpy errors(&model, &ContactsModel::error);
+        model.loadFromKdeConnect();
+        QCOMPARE(model.rowCount(), 0);
+        QCOMPARE(errors.count(), 1);
+    }
+
     void exportingAnEmptyPhonebookFailsLoudly()
     {
         // The constructor restores the cached phonebook, and an earlier test in

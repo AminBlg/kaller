@@ -76,7 +76,8 @@ void AgDevice::callAg(const QString &method, const QVariantList &args)
             });
 }
 
-void AgDevice::setDbusProperty(const char *interfaceName, const QString &name, const QVariant &value)
+void AgDevice::setDbusProperty(const char *interfaceName, const QString &name, const QVariant &value,
+                               std::function<void(bool)> done)
 {
     QDBusMessage msg = QDBusMessage::createMethodCall(
         QLatin1String(kService), m_objectPath, QLatin1String(kPropsIface), QStringLiteral("Set"));
@@ -85,9 +86,11 @@ void AgDevice::setDbusProperty(const char *interfaceName, const QString &name, c
     auto *watcher = new QDBusPendingCallWatcher(
         QDBusConnection::sessionBus().asyncCall(msg), this);
     connect(watcher, &QDBusPendingCallWatcher::finished, this,
-            [this, name](QDBusPendingCallWatcher *w) {
+            [this, name, done = std::move(done)](QDBusPendingCallWatcher *w) {
                 w->deleteLater();
                 const QDBusMessage reply = w->reply();
+                if (done)
+                    done(reply.type() != QDBusMessage::ErrorMessage);
                 if (reply.type() == QDBusMessage::ErrorMessage) {
                     qCWarning(FONER_TELEPHONY) << "AG property" << name << "refused:"
                                                << reply.errorMessage();
@@ -157,10 +160,15 @@ void AgDevice::routeAudioHere()
 }
 
 
-void AgDevice::setMicrophoneVolume(uchar volume)
+void AgDevice::setMicrophoneVolume(uchar volume, std::function<void(bool)> done)
 {
-    m_micVolume = volume;
-    setDbusProperty(kAgIface, QStringLiteral("MicrophoneVolume"), QVariant::fromValue(volume));
+    setDbusProperty(kAgIface, QStringLiteral("MicrophoneVolume"), QVariant::fromValue(volume),
+                    [this, volume, done = std::move(done)](bool ok) {
+                        if (ok)
+                            m_micVolume = volume;
+                        if (done)
+                            done(ok);
+                    });
 }
 
 void AgDevice::onPropertiesChanged(const QString &interfaceName, const QVariantMap &changed,

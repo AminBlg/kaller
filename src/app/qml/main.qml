@@ -15,8 +15,9 @@ Kirigami.ApplicationWindow {
     height: 640
     // Explicit: an ApplicationWindow defaults to hidden, and main.cpp only ever
     // calls hide(). On a plain X server without a launcher to activate us, the
-    // window never mapped at all.
-    visible: !settings.startMinimised
+    // window never mapped at all. Read once: a live binding would hide this
+    // window the moment "Start hidden" is ticked in the settings sheet.
+    Component.onCompleted: visible = !settings.startMinimised
     minimumWidth: Kirigami.Units.gridUnit * 18
     minimumHeight: Kirigami.Units.gridUnit * 26
 
@@ -47,6 +48,10 @@ Kirigami.ApplicationWindow {
         if (settings.closeToTray) {
             close.accepted = false
             root.hide()
+        } else {
+            // quitOnLastWindowClosed is false so the tray survives, which also
+            // means a closed window would otherwise leave the process running.
+            Qt.quit()
         }
     }
 
@@ -57,6 +62,12 @@ Kirigami.ApplicationWindow {
         icon.name: "document-open"
         shortcut: StandardKey.Open
         onTriggered: vcfDialog.open()
+    }
+    readonly property Kirigami.Action kdeConnectAction: Kirigami.Action {
+        text: i18n("Load contacts from KDE Connect")
+        icon.name: "kdeconnect"
+        enabled: contactsModel.kdeConnectAvailable()
+        onTriggered: contactsModel.loadFromKdeConnect()
     }
     readonly property Kirigami.Action exportAction: Kirigami.Action {
         text: i18n("Export vCard…")
@@ -103,6 +114,7 @@ Kirigami.ApplicationWindow {
         Controls.Menu {
             title: i18nc("@title:menu", "&File")
             Controls.MenuItem { action: root.importAction }
+            Controls.MenuItem { action: root.kdeConnectAction }
             Controls.MenuItem { action: root.exportAction }
             Controls.MenuSeparator {}
             Controls.MenuItem { action: root.settingsAction }
@@ -163,6 +175,7 @@ Kirigami.ApplicationWindow {
         actions: [
             root.settingsAction,
             root.importAction,
+            root.kdeConnectAction,
             root.exportAction,
             root.bluetoothAction,
             root.hideAction,
@@ -600,7 +613,12 @@ Kirigami.ApplicationWindow {
                     Accessible.name: telephonyClient.muted ? i18n("Unmute") : i18n("Mute")
                     checkable: true
                     checked: telephonyClient.muted
-                    onToggled: telephonyClient.setMuted(checked)
+                    onToggled: {
+                        telephonyClient.setMuted(checked)
+                        // A click breaks the binding. Restore it so a refused write
+                        // shows the real state, not the clicked one.
+                        checked = Qt.binding(() => telephonyClient.muted)
+                    }
                 }
                 Kirigami.Icon {
                     source: "audio-volume-high"

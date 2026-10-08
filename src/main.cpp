@@ -7,6 +7,7 @@
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include <QQuickStyle>
+#include <QSet>
 #include <QIcon>
 #include <QUrl>
 #include <QWindow>
@@ -26,6 +27,8 @@
 #include <KDBusService>
 #include <KLocalizedString>
 #include <KLocalizedQmlContext>
+
+#include <memory>
 
 namespace {
 
@@ -75,7 +78,8 @@ void connectContactsPull(TelephonyClient &client, ContactsModel &contacts, Setti
                      [&client, &contacts, &settings]() {
                          if (!settings.autoLoadContacts() || contacts.loading())
                              return;
-                         if (contacts.rowCount() > 0)
+                         // KDE Connect's list is only a stand-in until a phone answers.
+                         if (contacts.rowCount() > 0 && !contacts.fromKdeConnect())
                              return;
                          const QString address = connectedPhoneAddress(client);
                          if (!address.isEmpty())
@@ -86,15 +90,29 @@ void connectContactsPull(TelephonyClient &client, ContactsModel &contacts, Setti
 void connectHistoryPull(TelephonyClient &client, ContactsModel &contacts,
                         RecentsModel &recents, Settings &settings)
 {
-    const auto pull = [&client, &contacts, &recents, &settings]() {
-        if (!settings.autoLoadContacts() || contacts.loading())
-            return;
-        if (recents.loading() || recents.rowCount() > 0)
+    // Once per phone and run. Testing recents.rowCount() instead skipped the
+    // import whenever a live call had already ended, because that appends a row.
+    struct State {
+        QSet<QString> imported;
+        QString attempting;
+    };
+    auto state = std::make_shared<State>();
+    const auto pull = [&client, &contacts, &recents, &settings, state]() {
+        if (!settings.autoLoadContacts() || contacts.loading() || recents.loading())
             return;
         const QString address = connectedPhoneAddress(client);
-        if (!address.isEmpty())
-            recents.loadFromPhone(address);
+        if (address.isEmpty() || state->imported.contains(address))
+            return;
+        state->imported.insert(address);
+        state->attempting = address;
+        recents.loadFromPhone(address);
     };
+    // A failed import must stay retryable, as it was when the guard was the row count.
+    QObject::connect(&recents, &RecentsModel::lastErrorChanged, &recents,
+                     [&recents, state]() {
+                         if (!recents.lastError().isEmpty())
+                             state->imported.remove(state->attempting);
+                     });
 
     // Two triggers, because either alone leaves a case uncovered. A phone
     // connecting with the phonebook already restored from cache never starts a
@@ -176,6 +194,13 @@ int main(int argc, char *argv[])
 
     EventNotifier events(&client, &contactsModel, &recentsModel, &settings);
     events.setNameResolver(resolver);
+
+    // No cache yet, but KDE Connect already holds the phonebook: show it now,
+    // before any phone is in Bluetooth range. A later pull replaces it.
+    if (settings.autoLoadContacts() && contactsModel.rowCount() == 0
+        && contactsModel.kdeConnectAvailable()) {
+        contactsModel.loadFromKdeConnect();
+    }
 
     connectContactsPull(client, contactsModel, settings);
     connectHistoryPull(client, contactsModel, recentsModel, settings);

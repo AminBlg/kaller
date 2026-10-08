@@ -132,7 +132,9 @@ private:
     bool m_muted = false;
     // Restored on unmute; the AG range is 0-15.
     int m_volumeBeforeMute = 15;
-    int m_selectedRow = 0;
+    // The phone's Bluetooth address, not its row: the list is rebuilt on every
+    // refresh and a phone ahead of the selected one can leave.
+    QString m_selectedAddress;
 
     PendingEndTracker m_pendingEnd;
 };

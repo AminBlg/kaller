@@ -15,6 +15,11 @@ jobs:
     # are older than this project needs. Arch also matches the machine the code
     # is developed on, so a break here is a real break.
     container: archlinux:base-devel
+    # Explicit bash runs with -eo pipefail. The unspecified default is `bash -e`,
+    # so `cmake --build | tee` hid a failed build behind tee's exit code.
+    defaults:
+      run:
+        shell: bash
 
     steps:
       - name: Install the dependencies

@@ -20,6 +20,7 @@ class ContactsModel : public QAbstractListModel
     Q_PROPERTY(int count READ rowCount NOTIFY countChanged)
     Q_PROPERTY(bool loading READ loading NOTIFY loadingChanged)
     Q_PROPERTY(QString lastError READ lastError NOTIFY lastErrorChanged)
+    Q_PROPERTY(bool fromKdeConnect READ fromKdeConnect NOTIFY countChanged)
     // The live search text. RankRole is computed against it.
     Q_PROPERTY(QString query READ query WRITE setQuery NOTIFY queryChanged)
 
@@ -76,6 +77,14 @@ public:
     static QString cachePath();
     // Where the last-called stamps are kept, beside the phonebook.
     static QString lastCalledPath();
+    // The vCards KDE Connect's contacts plugin keeps in sync over Wi-Fi, one file
+    // per contact under <data>/kpeoplevcard/kdeconnect-<device>/. They need no
+    // paired phone in Bluetooth range, which the phonebook pull does.
+    static QStringList kdeConnectCardFiles(const QString &root = QString());
+    Q_INVOKABLE bool kdeConnectAvailable() const { return !kdeConnectCardFiles().isEmpty(); }
+    // True while the list on screen came from KDE Connect, so a pull from the
+    // phone still replaces it instead of being skipped as "already loaded".
+    bool fromKdeConnect() const { return m_fromKdeConnect; }
 
     // Recents answer "who did I call", but only for calls this session saw or
     // imported. The persisted stamp covers restarts. Newest of the two wins.
@@ -101,6 +110,9 @@ Q_SIGNALS:
 
 public Q_SLOTS:
     void clear();
+    // Shows KDE Connect's cached contacts. Not written to Foner's own cache, so a
+    // later pull from the phone replaces them and nothing stale outlives it.
+    void loadFromKdeConnect();
 
 private:
     void setLoading(bool on);
@@ -113,6 +125,7 @@ private:
     void saveLastCalled() const;
 
     QList<ContactItem> m_contacts;
+    bool m_fromKdeConnect = false;
     RecentsModel *m_recents = nullptr;
     // Keyed by ContactsModel::numberKey, so it survives format differences.
     QHash<QString, QDateTime> m_lastCalledByKey;

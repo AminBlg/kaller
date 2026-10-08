@@ -41,6 +41,8 @@ TrayIcon::TrayIcon(TelephonyClient *client, QWindow *window, QObject *parent)
     // The glyph carries connection state, so the device list matters as much as
     // the call list.
     connect(m_client->devices(), &AgModel::countChanged, this, &TrayIcon::updateForCallState);
+    connect(m_client, &TelephonyClient::selectedAddressChanged, this,
+            &TrayIcon::updateForCallState);
     connect(m_client->calls(), &CallModel::countChanged, this, &TrayIcon::updateForCallState);
     connect(m_client->calls(), &CallModel::incomingCallIndexChanged, this,
             &TrayIcon::updateForCallState);
@@ -54,10 +56,9 @@ TrayIcon::TrayIcon(TelephonyClient *client, QWindow *window, QObject *parent)
 
 QString TrayIcon::phoneName() const
 {
-    if (m_client->devices()->rowCount() == 0)
+    const QString address = m_client->selectedAddress();
+    if (address.isEmpty())
         return QString();
-    const QModelIndex first = m_client->devices()->index(0, 0);
-    const QString address = m_client->devices()->data(first, AgModel::AddressRole).toString();
     return m_bluez ? m_bluez->nameFor(address) : address;
 }
 

@@ -274,10 +274,6 @@ void TelephonyClient::refreshDevices()
                 }
 
                 m_deviceList = next;
-                // A phone that goes away must not leave the selection pointing
-                // past the end of the list.
-                if (m_selectedRow >= m_deviceList.size())
-                    m_selectedRow = 0;
 
                 // Model gets the new list before anything is destroyed.
                 m_devices->setDevices(m_deviceList);
@@ -490,9 +486,12 @@ void TelephonyClient::openBluetoothSettings()
 
 void TelephonyClient::setSelectedDevice(int row)
 {
-    if (m_selectedRow == row)
+    if (row < 0 || row >= m_deviceList.size())
         return;
-    m_selectedRow = row;
+    const QString address = m_deviceList.at(row)->address();
+    if (m_selectedAddress == address)
+        return;
+    m_selectedAddress = address;
     Q_EMIT transportStateChanged();
     Q_EMIT selectedAddressChanged();
 }
@@ -513,8 +512,12 @@ QString TelephonyClient::transportState() const
 
 AgDevice *TelephonyClient::selectedDevice() const
 {
-    if (m_selectedRow >= 0 && m_selectedRow < m_deviceList.size())
-        return m_deviceList.at(m_selectedRow);
+    for (AgDevice *device : m_deviceList) {
+        if (device->address() == m_selectedAddress)
+            return device;
+    }
+    // Nothing chosen yet, or the chosen phone left: fall back to the first one
+    // without forgetting the choice, so the phone is picked again if it returns.
     return m_deviceList.value(0);
 }
 
@@ -594,18 +597,23 @@ void TelephonyClient::setMuted(bool muted)
     if (!d || muted == m_muted)
         return;
 
+    int target = m_volumeBeforeMute;
     if (muted) {
         // Cached by AgDevice. A -1 must not be remembered, or unmute restores silence.
         const int current = d->microphoneVolume();
         if (current > 0)
             m_volumeBeforeMute = current;
-        d->setMicrophoneVolume(0);
-    } else {
-        d->setMicrophoneVolume(static_cast<uchar>(m_volumeBeforeMute));
+        target = 0;
     }
 
-    m_muted = muted;
-    Q_EMIT mutedChanged(m_muted);
+    // The flag follows the phone's answer. Setting it first would show "muted"
+    // while the microphone stays live after a refused write.
+    d->setMicrophoneVolume(static_cast<uchar>(target), [this, muted](bool ok) {
+        if (!ok)
+            return;
+        m_muted = muted;
+        Q_EMIT mutedChanged(m_muted);
+    });
 }
 
 void TelephonyClient::setSpeakerVolume(int volume)
