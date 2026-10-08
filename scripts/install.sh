@@ -204,8 +204,13 @@ fi
 
 # ---------------------------------------------------------------- versions
 
-need cmake "cmake is missing even after the package install, which should not happen."
-need git   "git is missing even after the package install, which should not happen."
+if [ "${KALLER_SKIP_PACKAGES:-0}" = 1 ]; then
+    MISSING="because KALLER_SKIP_PACKAGES=1 skipped the package install. Install it, then run again."
+else
+    MISSING="even after the package install, which should not happen."
+fi
+need cmake "cmake is missing $MISSING"
+need git   "git is missing $MISSING"
 
 QT_VER=$(qmake6 -query QT_VERSION 2>/dev/null \
     || pkg-config --modversion Qt6Core 2>/dev/null \

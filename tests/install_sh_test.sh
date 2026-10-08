@@ -63,6 +63,17 @@ else
     printf 'FAIL the old FONER_SKIP_PACKAGES=1 (exit %s)\n%s\n' "$rc" "$out"; FAILED=1
 fi
 
+# Packages skipped and cmake absent: the message must not blame a package install.
+printf 'ID=debian\n' > "$WORK/os-release"
+out=$(PATH="$WORK/bin" KALLER_OS_RELEASE="$WORK/os-release" KALLER_SKIP_PACKAGES=1 \
+      sh "$SCRIPT" 2>&1) && rc=0 || rc=$?
+if [ "$rc" -eq 1 ] && printf '%s' "$out" | grep -q "skipped the package install" \
+   && ! printf '%s' "$out" | grep -q "even after"; then
+    printf 'ok   skipped packages and no cmake: the message says why\n'
+else
+    printf 'FAIL skipped packages and no cmake (exit %s)\n%s\n' "$rc" "$out"; FAILED=1
+fi
+
 run "no os-release at all, no package manager" '' "" 1 "Unrecognised distribution"
 
 exit $FAILED
