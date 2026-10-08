@@ -26,22 +26,30 @@ void fromFoner(const QString &configRoot, const QString &dataRoot)
     const QString newPath = dataRoot + QStringLiteral("/kaller");
     if (!oldDir.exists())
         return;
-    // An existing kaller directory means the new name already ran. Leave both.
-    if (QDir(newPath).exists())
-        return;
+    // The install script creates the new directory for its uninstall list
+    // before the program ever starts, so "the directory exists" says nothing
+    // about whether the data moved. Decide file by file instead.
     if (!QDir().mkpath(newPath)) {
         qCWarning(KALLER_CONTACTS) << "could not create" << newPath;
         return;
     }
 
-    // Flat on purpose: the phonebook cache and the last-called file are the only files.
+    // Flat on purpose: the phonebook cache and the last-called file are the
+    // data. The install manifest names files of the old program and stays
+    // where the documentation says it is.
     int moved = 0;
     const QStringList names = oldDir.entryList(QDir::Files);
     for (const QString &name : names) {
-        if (QFile::rename(oldDir.filePath(name), newPath + QLatin1Char('/') + name))
+        if (name == QLatin1String("install_manifest.txt"))
+            continue;
+        const QString target = newPath + QLatin1Char('/') + name;
+        if (QFile::exists(target))
+            continue;
+        if (QFile::rename(oldDir.filePath(name), target))
             ++moved;
     }
-    qCInfo(KALLER_CONTACTS) << "moved" << moved << "files from the Foner data directory";
+    if (moved > 0)
+        qCInfo(KALLER_CONTACTS) << "moved" << moved << "files from the Foner data directory";
     // Only removes the directory when it is empty, which is what is wanted.
     QDir().rmdir(oldDir.path());
 }

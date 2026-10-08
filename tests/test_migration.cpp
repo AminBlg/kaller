@@ -62,6 +62,29 @@ private Q_SLOTS:
         QCOMPARE(read(data.filePath(QStringLiteral("foner/lastcalled"))), QByteArray("old"));
     }
 
+    void migratesEvenWhenTheInstallerAlreadyCreatedTheNewDirectory()
+    {
+        // scripts/install.sh writes ~/.local/share/kaller/install_manifest.txt
+        // before the program first runs. That must not stop the data moving.
+        QTemporaryDir config, data;
+        QVERIFY(config.isValid() && data.isValid());
+        write(data.filePath(QStringLiteral("foner/phonebook.vcf")), "BEGIN:VCARD");
+        write(data.filePath(QStringLiteral("foner/lastcalled")), "dialled");
+        write(data.filePath(QStringLiteral("foner/install_manifest.txt")), "old list");
+        write(data.filePath(QStringLiteral("kaller/install_manifest.txt")), "new list");
+
+        Migration::fromFoner(config.path(), data.path());
+
+        QCOMPARE(read(data.filePath(QStringLiteral("kaller/phonebook.vcf"))),
+                 QByteArray("BEGIN:VCARD"));
+        QCOMPARE(read(data.filePath(QStringLiteral("kaller/lastcalled"))), QByteArray("dialled"));
+        // Neither list is touched: the old one still says how to remove Foner.
+        QCOMPARE(read(data.filePath(QStringLiteral("kaller/install_manifest.txt"))),
+                 QByteArray("new list"));
+        QCOMPARE(read(data.filePath(QStringLiteral("foner/install_manifest.txt"))),
+                 QByteArray("old list"));
+    }
+
     void doesNothingOnAFreshInstall()
     {
         QTemporaryDir config, data;
