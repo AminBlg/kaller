@@ -73,6 +73,14 @@ QString connectedPhoneAddress(const TelephonyClient &client)
     return client.devices()->data(first, AgModel::AddressRole).toString();
 }
 
+// No cache yet, but KDE Connect already holds the phonebook: show it now,
+// before any phone is in Bluetooth range. A later pull replaces it.
+void showKdeConnectContactsWhenNoCache(ContactsModel &contacts, const Settings &settings)
+{
+    if (settings.autoLoadContacts() && contacts.rowCount() == 0 && contacts.kdeConnectAvailable())
+        contacts.loadFromKdeConnect();
+}
+
 void connectContactsPull(TelephonyClient &client, ContactsModel &contacts, Settings &settings)
 {
     QObject::connect(client.devices(), &AgModel::countChanged, &contacts,
@@ -110,7 +118,7 @@ void connectHistoryPull(TelephonyClient &client, ContactsModel &contacts,
     };
     // A failed import must stay retryable, as it was when the guard was the row count.
     QObject::connect(&recents, &RecentsModel::lastErrorChanged, &recents,
-                     [&recents, state]() {
+                     [&recents, state] {
                          if (!recents.lastError().isEmpty())
                              state->imported.remove(state->attempting);
                      });
@@ -198,13 +206,7 @@ int main(int argc, char *argv[])
     EventNotifier events(&client, &contactsModel, &recentsModel, &settings);
     events.setNameResolver(resolver);
 
-    // No cache yet, but KDE Connect already holds the phonebook: show it now,
-    // before any phone is in Bluetooth range. A later pull replaces it.
-    if (settings.autoLoadContacts() && contactsModel.rowCount() == 0
-        && contactsModel.kdeConnectAvailable()) {
-        contactsModel.loadFromKdeConnect();
-    }
-
+    showKdeConnectContactsWhenNoCache(contactsModel, settings);
     connectContactsPull(client, contactsModel, settings);
     connectHistoryPull(client, contactsModel, recentsModel, settings);
 

@@ -19,7 +19,8 @@ BUILD=${BUILD_DIR:-build}
 export PATH="$HOME/.local/bin:$PATH"
 
 # Generated sources are build output and would swamp every count.
-EXCLUDES=(-x "*/kaller_autogen/*" -x "*/kallerprobe_autogen/*" -x "*/.qt/*" -x "*/build/*")
+# Any *_autogen: an old in-source build leaves one named after the old target.
+EXCLUDES=(-x "*_autogen/*" -x "*/.qt/*" -x "*/build/*")
 
 json_null_or() { [ -n "$1" ] && echo "$1" || echo null; }
 
