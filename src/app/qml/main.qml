@@ -1087,6 +1087,13 @@ Kirigami.ApplicationWindow {
                                             id: numberRow
                                             required property string modelData
                                             Layout.fillWidth: true
+                                            // Margins, not column spacing: the
+                                            // delegate height sums the column's
+                                            // implicit height, which counts
+                                            // these, so the last button no
+                                            // longer sits on the separator.
+                                            Layout.topMargin: Kirigami.Units.smallSpacing
+                                            Layout.bottomMargin: Kirigami.Units.smallSpacing
 
                                             // Selectable: a number nobody can
                                             // copy has to be read aloud and
