@@ -40,7 +40,12 @@ GridLayout {
             required property var modelData
 
             Layout.fillWidth: true
+            // The keys give way first when the page is short: with the
+            // suggestion rows showing, fixed keys pushed the Call bar half under
+            // the tab bar. They still start from the full size.
+            Layout.fillHeight: true
             Layout.preferredHeight: Kirigami.Units.gridUnit * 3.4
+            Layout.minimumHeight: Kirigami.Units.gridUnit * 2.2
             // No background of our own: the style draws a real button, with the
             // gradient, hover and pressed depth the desktop theme provides.
             // Hand-drawing a rectangle here is what made these look flat.

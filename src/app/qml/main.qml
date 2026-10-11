@@ -824,6 +824,9 @@ Kirigami.ApplicationWindow {
 
                     Keypad {
                         Layout.fillWidth: true
+                        // Shrinks, never grows past its natural size: see Keypad.qml.
+                        Layout.fillHeight: true
+                        Layout.maximumHeight: implicitHeight
                         // Same inset as the Call bar below, so the key grid and
                         // the bar share one edge instead of stepping apart.
                         Layout.leftMargin: Kirigami.Units.largeSpacing
