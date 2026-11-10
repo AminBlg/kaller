@@ -101,6 +101,7 @@ To try the contact list with no phone, open `docs/demo-contacts.vcf` with File >
 - Mute the microphone, set the speaker level, and send keypad tones.
 - Pull the call audio onto this computer.
 - Read the contacts and the call history from the phone, and keep them on disk.
+- Load contacts from the cards that KDE Connect keeps on this computer, with File > Load contacts from KDE Connect.
 - Search contacts by name, by number, or by keypad letters: `254` finds "Ali".
 - Import and export vCard files.
 - Close the window, and Kaller keeps running in the system tray.
@@ -116,7 +117,11 @@ KDE Connect tells you that the phone is ringing. Kaller answers it. You dial and
 
 ## FAQ
 
-Does KDE Connect do this? KDE Connect lists notifications, SMS, a shared clipboard and remote control in its README. That list has no call dialing, and the wiki was not checked. Kaller covers the calls.
+Does KDE Connect do this? KDE Connect lists notifications, SMS, a shared clipboard and remote control in its README. That list has no call dialing, and the wiki was not checked. Kaller covers the calls. If you use both, Kaller can load the contacts that KDE Connect already has.
+
+Does Kaller handle WhatsApp or other app calls? Kaller controls the calls that the phone reports over the Bluetooth hands-free profile. Calls inside other apps were not tested.
+
+Is there an AppImage or a Flatpak? No. Kaller talks to the PipeWire and BlueZ services of your system, so the install script builds it on your machine. A Flatpak manifest is in the repository, but it was never built.
 
 Which phones work? Kaller was tested with one Android phone and one iPhone. Any phone that pairs over the Bluetooth hands-free profile can connect in theory, but only those two ran.
 
