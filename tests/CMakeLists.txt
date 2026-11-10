@@ -19,3 +19,9 @@ target_link_libraries(test_migration PRIVATE kallercore Qt6::Test)
 add_test(NAME migration COMMAND test_migration)
 
 add_test(NAME install_sh COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/install_sh_test.sh ${CMAKE_SOURCE_DIR}/scripts/install.sh)
+
+add_executable(test_tabchain test_tabchain.cpp)
+target_link_libraries(test_tabchain PRIVATE kallercore Qt6::Test Qt6::Quick Qt6::QuickControls2 Qt6::Widgets KF6::I18nQml)
+target_compile_definitions(test_tabchain PRIVATE
+    KALLER_MAIN_QML="${CMAKE_SOURCE_DIR}/src/app/qml/main.qml")
+add_test(NAME tabchain COMMAND test_tabchain)

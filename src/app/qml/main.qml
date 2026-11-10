@@ -794,7 +794,6 @@ Kirigami.ApplicationWindow {
                                                      : i18n("Search or enter number")
                         Accessible.name: i18n("Search contacts or enter a phone number")
                         inputMethodHints: Qt.ImhDialableCharactersOnly
-                        KeyNavigation.tab: callButton
                         horizontalAlignment: Text.AlignHCenter
                         font.pointSize: Kirigami.Theme.defaultFont.pointSize
                                         * (text.length > 0 ? 2.6 : 1.4)

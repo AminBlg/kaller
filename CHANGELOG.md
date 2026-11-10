@@ -19,6 +19,7 @@ Foner is now Kaller. A reader on r/kde suggested the name. The program, the repo
 - Contacts can load from the vCards that KDE Connect keeps. Use the File menu, or turn on automatic loading.
 - If the window is short, the keypad keys shrink. The Call bar no longer slides under the tab bar.
 - The Call buttons in an expanded contact have space around them.
+- Tab from the number field reaches the keypad keys. Before, with no phone connected, Tab skipped all twelve.
 
 ## 0.1.0, 2026-10-06
 

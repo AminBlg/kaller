@@ -68,13 +68,13 @@ introspecting a live gateway, and each is recorded so it is not rediscovered.
 
 ## Not done
 
-- **Keyboard-only operation is incomplete.** Audited, not yet fixed. The keypad keys are
-  unreachable by Tab: `Keypad.qml` sets no focus policy, so all twelve are skipped, and a
-  keyboard user has to type into the field instead of operating the visible control. The
-  tab chain also dead-ends at the tab bar rather than cycling back, and no shortcut
-  reaches the tabs, so switching to Contacts means walking there with Tab. Focus rings
-  are the style's default and nothing overrides them, but that has not been confirmed on
-  a real display.
+- **Keyboard operation was tested offscreen only.** `tests/test_tabchain.cpp` loads
+  `main.qml` and walks it with Tab: the number field, the twelve keys in order, and back
+  to the field. An earlier note here blamed a missing focus policy on the keys. That was
+  wrong. The keys always took focus. The number field sent Tab straight to the Call
+  button, and with no phone that button is disabled, so Tab looped over three controls
+  and never reached a key. The path with a phone connected, and the focus rings on a
+  real display, are not tested. No shortcut reaches the tabs yet.
 - The Flatpak manifest is written and has never been built. It does not list KContacts,
   which the KDE runtime can lack. Building it needs flatpak-builder, which is not
   installed here, and roughly 1.5 GB of KDE SDK, so the question of what else the runtime

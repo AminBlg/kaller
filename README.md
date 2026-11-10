@@ -133,7 +133,7 @@ Does Kaller send my contacts anywhere? Kaller has no account and no cloud servic
 
 ## Roadmap
 
-- Keyboard-only operation. The keypad keys cannot be reached with Tab yet.
+- A keyboard shortcut for each tab.
 - Test more phones and more desktops.
 - Package Kaller for more distributions.
 
