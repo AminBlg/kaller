@@ -29,6 +29,7 @@ jobs:
             qt6-base qt6-declarative qt6-tools \
             extra-cmake-modules kirigami kcoreaddons kdbusaddons ki18n \
             kcontacts knotifications kconfig kstatusnotifieritem kitemmodels \
+            qqc2-desktop-style \
             appstream desktop-file-utils
 
       - uses: actions/checkout@v4

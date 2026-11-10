@@ -64,6 +64,10 @@ else
 fi
 
 # Packages skipped and cmake absent: the message must not blame a package install.
+# This case runs past detection, where the script refuses root, and CI runs as root.
+if [ "$(id -u)" -eq 0 ]; then
+    printf 'skip skipped packages and no cmake: needs a non-root user\n'
+else
 printf 'ID=debian\n' > "$WORK/os-release"
 out=$(PATH="$WORK/bin" KALLER_OS_RELEASE="$WORK/os-release" KALLER_SKIP_PACKAGES=1 \
       sh "$SCRIPT" 2>&1) && rc=0 || rc=$?
@@ -72,6 +76,7 @@ if [ "$rc" -eq 1 ] && printf '%s' "$out" | grep -q "skipped the package install"
     printf 'ok   skipped packages and no cmake: the message says why\n'
 else
     printf 'FAIL skipped packages and no cmake (exit %s)\n%s\n' "$rc" "$out"; FAILED=1
+fi
 fi
 
 run "no os-release at all, no package manager" '' "" 1 "Unrecognised distribution"
